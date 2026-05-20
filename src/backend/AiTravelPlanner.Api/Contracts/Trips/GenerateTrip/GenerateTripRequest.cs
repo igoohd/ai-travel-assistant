@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AiTravelPlanner.Api.Contracts.Trips;
+namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
 public sealed record GenerateTripRequest(
     [Required]

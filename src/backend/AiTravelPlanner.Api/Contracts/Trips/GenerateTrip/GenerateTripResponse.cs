@@ -1,4 +1,4 @@
-namespace AiTravelPlanner.Api.Contracts.Trips;
+namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
 public sealed record GenerateTripResponse(
     string Destination,

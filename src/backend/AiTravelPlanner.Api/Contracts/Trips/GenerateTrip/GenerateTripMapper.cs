@@ -1,7 +1,7 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 
-namespace AiTravelPlanner.Api.Contracts.Trips;
+namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
 public static class GenerateTripMapper
 {

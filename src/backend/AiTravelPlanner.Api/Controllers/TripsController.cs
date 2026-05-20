@@ -1,4 +1,4 @@
-using AiTravelPlanner.Api.Contracts.Trips;
+using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,6 @@ namespace AiTravelPlanner.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class TripsController : ControllerBase
 {
-
     private readonly IGenerateTripUseCase _generateTripUseCase;
 
     public TripsController(IGenerateTripUseCase generateTripUseCase)
