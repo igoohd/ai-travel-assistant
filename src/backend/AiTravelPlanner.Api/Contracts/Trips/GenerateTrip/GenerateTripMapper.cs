@@ -3,7 +3,7 @@ using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Api.Contracts.Trips;
 
-public static class TripContractMapper
+public static class GenerateTripMapper
 {
     public static GenerateTripCommand ToCommand(this GenerateTripRequest request)
     {
