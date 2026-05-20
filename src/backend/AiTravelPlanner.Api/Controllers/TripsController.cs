@@ -1,20 +1,32 @@
+using AiTravelPlanner.Api.Contracts.Trips;
+using AiTravelPlanner.Application.Trips.GenerateTrip;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace AiTravelPlanner.Api.Controllers
+namespace AiTravelPlanner.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public sealed class TripsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class TripsController : ControllerBase
+
+    private readonly GenerateTripHandler _generateTripHandler;
+
+    public TripsController(GenerateTripHandler generateTripHandler)
     {
-        /// <summary>
-        /// Get all trips
-        /// </summary>
-        [HttpGet]
-        public IActionResult GetTrips()
-        {
-            return Ok();
-        }
+        _generateTripHandler = generateTripHandler;
+    }
+
+    [HttpPost("generate")]
+    public ActionResult GenerateTrip([FromBody] GenerateTripRequest request)
+    {
+        var command = new GenerateTripCommand(
+            Destination: request.Destination,
+            NumberOfDays: request.NumberOfDays,
+            Budget: request.Budget,
+            Interests: request.Interests
+        );
+        var tripPlan = _generateTripHandler.Handle(command);
+
+        return Ok(tripPlan);
     }
 }
