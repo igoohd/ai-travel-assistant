@@ -2,7 +2,7 @@ using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Application.Trips.GenerateTrip;
 
-public sealed class GenerateTripHandler
+public sealed class GenerateTripHandler : IGenerateTripUseCase
 {
     public TripPlan Handle(GenerateTripCommand command)
     {

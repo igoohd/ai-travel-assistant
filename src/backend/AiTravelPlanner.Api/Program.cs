@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<GenerateTripHandler>();
+builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
 
 var app = builder.Build();
 

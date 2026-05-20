@@ -9,11 +9,11 @@ namespace AiTravelPlanner.Api.Controllers;
 public sealed class TripsController : ControllerBase
 {
 
-    private readonly GenerateTripHandler _generateTripHandler;
+    private readonly IGenerateTripUseCase _generateTripUseCase;
 
-    public TripsController(GenerateTripHandler generateTripHandler)
+    public TripsController(IGenerateTripUseCase generateTripUseCase)
     {
-        _generateTripHandler = generateTripHandler;
+        _generateTripUseCase = generateTripUseCase;
     }
 
     [HttpPost("generate")]
@@ -25,7 +25,7 @@ public sealed class TripsController : ControllerBase
             Budget: request.Budget,
             Interests: request.Interests
         );
-        var tripPlan = _generateTripHandler.Handle(command);
+        var tripPlan = _generateTripUseCase.Handle(command);
 
         return Ok(tripPlan);
     }
