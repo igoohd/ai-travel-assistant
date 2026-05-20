@@ -1,0 +1,39 @@
+# Build output
+bin/
+obj/
+
+# User-specific IDE/editor files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Test results and coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Node/frontend dependencies and build output
+node_modules/
+.next/
+.nuxt/
+dist/
+build/
+
+# ASP.NET generated HTTPS certificates and publish output
+*.pfx
+publish/
