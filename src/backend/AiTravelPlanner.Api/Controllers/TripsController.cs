@@ -17,16 +17,14 @@ public sealed class TripsController : ControllerBase
     }
 
     [HttpPost("generate")]
-    public ActionResult GenerateTrip([FromBody] GenerateTripRequest request)
+    public ActionResult<GenerateTripResponse> GenerateTrip([FromBody] GenerateTripRequest request)
     {
-        var command = new GenerateTripCommand(
-            Destination: request.Destination,
-            NumberOfDays: request.NumberOfDays,
-            Budget: request.Budget,
-            Interests: request.Interests
-        );
+        var command = request.ToCommand();
+
         var tripPlan = _generateTripUseCase.Handle(command);
 
-        return Ok(tripPlan);
+        var response = tripPlan.ToResponse();
+
+        return Ok(response);
     }
 }
