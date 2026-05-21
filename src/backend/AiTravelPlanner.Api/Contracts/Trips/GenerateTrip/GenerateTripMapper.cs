@@ -16,9 +16,17 @@ public static class GenerateTripMapper
 
     public static GenerateTripResponse ToResponse(this TripPlan tripPlan)
     {
+        var days = tripPlan.Days
+            .Select(day => new TripDayResponse(
+                DayNumber: day.DayNumber,
+                Title: day.Title,
+                Description: day.Description))
+            .ToArray();
+
         return new GenerateTripResponse(
             Destination: tripPlan.Destination,
             NumberOfDays: tripPlan.NumberOfDays,
-            Overview: tripPlan.Overview);
+            Overview: tripPlan.Overview,
+            Days: days);
     }
 }
