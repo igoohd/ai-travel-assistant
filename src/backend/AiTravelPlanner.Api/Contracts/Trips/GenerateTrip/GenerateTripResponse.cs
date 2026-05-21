@@ -10,5 +10,11 @@ public sealed record GenerateTripResponse(
 public sealed record TripDayResponse(
 int DayNumber,
 string Title,
-string Description);
+string Description,
+IReadOnlyCollection<TripActivityResponse> Activities);
 
+public sealed record TripActivityResponse(
+    string TimeOfDay,
+    string Title,
+    string Description
+);

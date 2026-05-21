@@ -20,13 +20,20 @@ public static class GenerateTripMapper
             .Select(day => new TripDayResponse(
                 DayNumber: day.DayNumber,
                 Title: day.Title,
-                Description: day.Description))
+                Description: day.Description,
+                Activities: day.Activities
+                    .Select(activity => new TripActivityResponse(
+                        TimeOfDay: activity.TimeOfDay,
+                        Title: activity.Title,
+                        Description: activity.Description))
+                    .ToArray()))
             .ToArray();
 
         return new GenerateTripResponse(
             Destination: tripPlan.Destination,
             NumberOfDays: tripPlan.NumberOfDays,
             Overview: tripPlan.Overview,
-            Days: days);
+            Days: days
+        );
     }
 }
