@@ -13,27 +13,40 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                 "Number of days must be greater than zero.");
         }
 
-        var days = Enumerable.Range(1, command.NumberOfDays)
-            .Select(day => new TripDay(
-                DayNumber: day,
-                Title: $"Day {day} in {command.Destination}",
-                Description: "A placeholder day plan.",
-                Activities:
-                [
-                    new TripActivity(
-                        TimeOfDay: "Morning",
-                        Title: $"{command.Destination} orientation walk",
-                        Description: "Start with a relaxed walk through a central neighborhood."),
-                    new TripActivity(
-                        TimeOfDay: "Afternoon",
-                        Title: "Interest-based activity",
-                        Description: $"Explore something connected to {string.Join(", ", command.Interests)}."),
-                    new TripActivity(
-                        TimeOfDay: "Evening",
-                        Title: "Local dinner area",
-                        Description: "End the day near a lively food or entertainment district.")
-                ]))
+        var interests = command.Interests
+            .Where(interest => !string.IsNullOrWhiteSpace(interest))
+            .Select(interest => interest.Trim())
             .ToArray();
+
+        var fallbackInterest = interests.FirstOrDefault() ?? "local culture";
+
+        var days = Enumerable.Range(1, command.NumberOfDays)
+            .Select(day =>
+            {
+                var theme = interests.Length == 0
+                ? fallbackInterest
+                : interests[(day - 1) % interests.Length];
+
+                return new TripDay(
+                    DayNumber: day,
+                    Title: $"Day {day} in {command.Destination}",
+                    Description: "A placeholder day plan.",
+                    Activities:
+                    [
+                        new TripActivity(
+                            TimeOfDay: "Morning",
+                            Title: $"{command.Destination} orientation walk",
+                            Description: "Start with a relaxed walk through a central neighborhood."),
+                        new TripActivity(
+                            TimeOfDay: "Afternoon",
+                            Title: $"{theme} experience",
+                            Description: $"Explore a recommended place or activity connected to {theme}."),
+                        new TripActivity(
+                            TimeOfDay: "Evening",
+                            Title: "Local dinner area",
+                            Description: "End the day near a lively food or entertainment district.")
+                    ]);
+            }).ToArray();
 
         return new TripPlan(
             Destination: command.Destination,
