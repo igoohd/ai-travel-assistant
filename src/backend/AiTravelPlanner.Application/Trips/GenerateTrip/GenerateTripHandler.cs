@@ -61,7 +61,20 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             NumberOfDays: command.NumberOfDays,
             Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",
             Days: days,
-            Budget: budget);
+            Budget: budget,
+            Highlights:
+            [
+                $"Explore {command.Destination} through {string.Join(", ", interests.DefaultIfEmpty(fallbackInterest))}.",
+                "Balance planned activities with flexible discovery time.",
+                "Use the daily themes to keep the itinerary focused."
+            ],
+            TravelTips:
+            [
+                "Book popular restaurants and attractions in advance.",
+                "Group nearby activities together to reduce transit time.",
+                "Keep a small contingency budget for local transportation."
+            ]
+        );
     }
 
     private static string ClassifyBudget(decimal budget, int numberOfDays)

@@ -5,4 +5,7 @@ public sealed record TripPlan(
     int NumberOfDays,
     string Overview,
     IReadOnlyList<TripDay> Days,
-    BudgetEstimate Budget);
+    BudgetEstimate Budget,
+    IReadOnlyList<string> Highlights,
+    IReadOnlyList<string> TravelTips
+);

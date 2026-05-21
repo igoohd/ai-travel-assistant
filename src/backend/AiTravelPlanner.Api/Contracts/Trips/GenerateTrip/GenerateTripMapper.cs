@@ -40,7 +40,9 @@ public static class GenerateTripMapper
                 Food: tripPlan.Budget.Food,
                 Activities: tripPlan.Budget.Activities,
                 Total: tripPlan.Budget.Total,
-                Category: tripPlan.Budget.Category)
+                Category: tripPlan.Budget.Category),
+            Highlights: tripPlan.Highlights,
+            TravelTips: tripPlan.TravelTips
         );
     }
 }

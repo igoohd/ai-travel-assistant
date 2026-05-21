@@ -5,7 +5,9 @@ public sealed record GenerateTripResponse(
     int NumberOfDays,
     string Overview,
     IReadOnlyCollection<TripDayResponse> Days,
-    BudgetEstimateResponse Budget
+    BudgetEstimateResponse Budget,
+    IReadOnlyCollection<string> Highlights,
+    IReadOnlyCollection<string> TravelTips
     );
 
 public sealed record TripDayResponse(
