@@ -33,7 +33,14 @@ public static class GenerateTripMapper
             Destination: tripPlan.Destination,
             NumberOfDays: tripPlan.NumberOfDays,
             Overview: tripPlan.Overview,
-            Days: days
+            Days: days,
+            Budget: new BudgetEstimateResponse(
+                Hotel: tripPlan.Budget.Hotel,
+                Transportation: tripPlan.Budget.Transportation,
+                Food: tripPlan.Budget.Food,
+                Activities: tripPlan.Budget.Activities,
+                Total: tripPlan.Budget.Total,
+                Category: tripPlan.Budget.Category)
         );
     }
 }

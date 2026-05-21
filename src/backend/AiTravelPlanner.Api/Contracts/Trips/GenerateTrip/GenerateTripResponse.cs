@@ -4,7 +4,8 @@ public sealed record GenerateTripResponse(
     string Destination,
     int NumberOfDays,
     string Overview,
-    IReadOnlyCollection<TripDayResponse> Days
+    IReadOnlyCollection<TripDayResponse> Days,
+    BudgetEstimateResponse Budget
     );
 
 public sealed record TripDayResponse(
@@ -18,3 +19,11 @@ public sealed record TripActivityResponse(
     string Title,
     string Description
 );
+
+public sealed record BudgetEstimateResponse(
+    decimal Hotel,
+    decimal Transportation,
+    decimal Food,
+    decimal Activities,
+    decimal Total,
+    string Category);

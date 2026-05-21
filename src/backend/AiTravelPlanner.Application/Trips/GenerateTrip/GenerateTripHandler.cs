@@ -48,10 +48,31 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                     ]);
             }).ToArray();
 
+        var budget = new BudgetEstimate(
+            Hotel: Math.Round(command.Budget * 0.40m, 2),
+            Transportation: Math.Round(command.Budget * 0.15m, 2),
+            Food: Math.Round(command.Budget * 0.25m, 2),
+            Activities: Math.Round(command.Budget * 0.20m, 2),
+            Total: command.Budget,
+            Category: ClassifyBudget(command.Budget, command.NumberOfDays));
+
         return new TripPlan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",
-            Days: days);
+            Days: days,
+            Budget: budget);
+    }
+
+    private static string ClassifyBudget(decimal budget, int numberOfDays)
+    {
+        var dailyBudget = budget / numberOfDays;
+
+        return dailyBudget switch
+        {
+            < 100 => "budget",
+            < 300 => "mid-range",
+            _ => "luxury"
+        };
     }
 }
