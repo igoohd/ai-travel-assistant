@@ -69,6 +69,7 @@ public class StubTripPlanGenerator : ITripPlanGenerator
             Food: Math.Round(command.Budget * 0.25m, 2),
             Activities: Math.Round(command.Budget * 0.20m, 2),
             Total: command.Budget,
+            Currency: command.Currency,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
         var validationIssues = new List<ValidationIssue>();

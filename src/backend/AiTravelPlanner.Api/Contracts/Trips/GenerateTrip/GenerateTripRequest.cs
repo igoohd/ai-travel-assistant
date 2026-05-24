@@ -15,4 +15,8 @@ public sealed record GenerateTripRequest(
 
     [Required]
     [MinLength(1)]
-    IReadOnlyCollection<string> Interests);
+    IReadOnlyCollection<string> Interests,
+
+    [Required]
+    [StringLength(3, MinimumLength = 3)]
+    string Currency);

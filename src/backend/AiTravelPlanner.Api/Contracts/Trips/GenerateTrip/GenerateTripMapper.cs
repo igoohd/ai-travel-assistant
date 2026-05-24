@@ -11,6 +11,7 @@ public static class GenerateTripMapper
             Destination: request.Destination,
             NumberOfDays: request.NumberOfDays,
             Budget: request.Budget,
+            Currency: request.Currency,
             Interests: request.Interests);
     }
 
@@ -49,7 +50,8 @@ public static class GenerateTripMapper
                 Food: tripPlan.Budget.Food,
                 Activities: tripPlan.Budget.Activities,
                 Total: tripPlan.Budget.Total,
-                Category: tripPlan.Budget.Category),
+                Category: tripPlan.Budget.Category,
+                Currency: tripPlan.Budget.Currency),
             Highlights: tripPlan.Highlights,
             TravelTips: tripPlan.TravelTips,
             ValidationIssues: tripPlan.ValidationIssues
@@ -57,7 +59,6 @@ public static class GenerateTripMapper
                     Code: issue.Code,
                     Message: issue.Message,
                     Severity: issue.Severity))
-                .ToArray()
-        );
+                .ToArray());
     }
 }
