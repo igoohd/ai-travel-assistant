@@ -1,5 +1,6 @@
 public sealed record TripActivity(
     string TimeOfDay,
     string Title,
-    string Description
+    string Description,
+    decimal EstimatedCost
 );

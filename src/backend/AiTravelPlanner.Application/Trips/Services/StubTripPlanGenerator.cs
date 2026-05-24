@@ -20,6 +20,10 @@ public class StubTripPlanGenerator : ITripPlanGenerator
 
         var fallbackInterest = interests.FirstOrDefault() ?? "local culture";
 
+        var dailyBudget = command.Budget / command.NumberOfDays;
+        var activityCost = Math.Round(dailyBudget * 0.12m, 2);
+        var restaurantCost = Math.Round(dailyBudget * 0.15m, 2);
+
         var days = Enumerable.Range(1, command.NumberOfDays)
             .Select(day =>
             {
@@ -36,22 +40,26 @@ public class StubTripPlanGenerator : ITripPlanGenerator
                         new TripActivity(
                             TimeOfDay: "Morning",
                             Title: $"{command.Destination} orientation walk",
-                            Description: "Start with a relaxed walk through a central neighborhood."),
+                            Description: "Start with a relaxed walk through a central neighborhood.",
+                            EstimatedCost: activityCost),
                         new TripActivity(
                             TimeOfDay: "Afternoon",
                             Title: $"{theme} experience",
-                            Description: $"Explore a recommended place or activity connected to {theme}."),
+                            Description: $"Explore a recommended place or activity connected to {theme}.",
+                            EstimatedCost: activityCost),
                         new TripActivity(
                             TimeOfDay: "Evening",
                             Title: "Local dinner area",
-                            Description: "End the day near a lively food or entertainment district.")
+                            Description: "End the day near a lively food or entertainment district.",
+                            EstimatedCost: activityCost)
                     ],
                     Restaurants:
                     [
                         new RestaurantSuggestion(
                             Name: $"{command.Destination} local favorite",
                             Cuisine: "Local",
-                            Notes: $"A placeholder restaurant suggestion for a {theme}-focused day.")
+                            Notes: $"A placeholder restaurant suggestion for a {theme}-focused day.",
+                            EstimatedCost: restaurantCost)
                     ]);
             }).ToArray();
 

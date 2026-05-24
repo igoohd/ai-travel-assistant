@@ -25,13 +25,15 @@ public static class GenerateTripMapper
                     .Select(activity => new TripActivityResponse(
                         TimeOfDay: activity.TimeOfDay,
                         Title: activity.Title,
-                        Description: activity.Description))
+                        Description: activity.Description,
+                        EstimatedCost: activity.EstimatedCost))
                     .ToArray(),
                 Restaurants: day.Restaurants
                     .Select(restaurant => new RestaurantSuggestionResponse(
                         Name: restaurant.Name,
                         Cuisine: restaurant.Cuisine,
-                        Notes: restaurant.Notes))
+                        Notes: restaurant.Notes,
+                        EstimatedCost: restaurant.EstimatedCost))
                     .ToArray())
             )
             .ToArray();

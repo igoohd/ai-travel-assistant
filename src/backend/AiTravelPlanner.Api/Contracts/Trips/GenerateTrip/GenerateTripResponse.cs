@@ -20,7 +20,8 @@ IReadOnlyCollection<RestaurantSuggestionResponse> Restaurants);
 public sealed record TripActivityResponse(
     string TimeOfDay,
     string Title,
-    string Description
+    string Description,
+    decimal EstimatedCost
 );
 
 public sealed record BudgetEstimateResponse(
@@ -34,5 +35,6 @@ public sealed record BudgetEstimateResponse(
 public sealed record RestaurantSuggestionResponse(
     string Name,
     string Cuisine,
-    string Notes
+    string Notes,
+    decimal EstimatedCost
 );
