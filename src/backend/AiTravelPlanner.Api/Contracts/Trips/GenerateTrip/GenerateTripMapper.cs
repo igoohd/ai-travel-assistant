@@ -51,7 +51,13 @@ public static class GenerateTripMapper
                 Total: tripPlan.Budget.Total,
                 Category: tripPlan.Budget.Category),
             Highlights: tripPlan.Highlights,
-            TravelTips: tripPlan.TravelTips
+            TravelTips: tripPlan.TravelTips,
+            ValidationIssues: tripPlan.ValidationIssues
+                .Select(issue => new TripValidationIssueResponse(
+                    Code: issue.Code,
+                    Message: issue.Message,
+                    Severity: issue.Severity))
+                .ToArray()
         );
     }
 }

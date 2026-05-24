@@ -71,6 +71,24 @@ public class StubTripPlanGenerator : ITripPlanGenerator
             Total: command.Budget,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
+        var validationIssues = new List<TripValidationIssue>();
+
+        if (days.Any(day => day.Activities.Count > 4))
+        {
+            validationIssues.Add(new TripValidationIssue(
+                Code: "TOO_MANY_ACTIVITIES",
+                Message: "One or more days has too many activities.",
+                Severity: "warning"));
+        }
+
+        if (budget.Total > command.Budget)
+        {
+            validationIssues.Add(new TripValidationIssue(
+                Code: "BUDGET_EXCEEDED",
+                Message: "Estimated trip cost exceeds the requested budget.",
+                Severity: "error"));
+        }
+
         return new TripPlan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
@@ -88,7 +106,8 @@ public class StubTripPlanGenerator : ITripPlanGenerator
                 "Book popular restaurants and attractions in advance.",
                 "Group nearby activities together to reduce transit time.",
                 "Keep a small contingency budget for local transportation."
-            ]
+            ],
+            ValidationIssues: validationIssues
         );
     }
 

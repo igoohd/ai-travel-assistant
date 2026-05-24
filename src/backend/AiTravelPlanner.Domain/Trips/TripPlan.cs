@@ -7,5 +7,6 @@ public sealed record TripPlan(
     IReadOnlyList<TripDay> Days,
     BudgetEstimate Budget,
     IReadOnlyList<string> Highlights,
-    IReadOnlyList<string> TravelTips
+    IReadOnlyList<string> TravelTips,
+    IReadOnlyList<TripValidationIssue> ValidationIssues
 );

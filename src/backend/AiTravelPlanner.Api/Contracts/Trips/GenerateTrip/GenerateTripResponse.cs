@@ -7,7 +7,8 @@ public sealed record GenerateTripResponse(
     IReadOnlyCollection<TripDayResponse> Days,
     BudgetEstimateResponse Budget,
     IReadOnlyCollection<string> Highlights,
-    IReadOnlyCollection<string> TravelTips
+    IReadOnlyCollection<string> TravelTips,
+    IReadOnlyCollection<TripValidationIssueResponse> ValidationIssues
     );
 
 public sealed record TripDayResponse(
@@ -37,4 +38,10 @@ public sealed record RestaurantSuggestionResponse(
     string Cuisine,
     string Notes,
     decimal EstimatedCost
+);
+
+public sealed record TripValidationIssueResponse(
+    string Code,
+    string Message,
+    string Severity
 );
