@@ -17,12 +17,12 @@ public static class GenerateTripMapper
     public static GenerateTripResponse ToResponse(this Plan tripPlan)
     {
         var days = tripPlan.Days
-            .Select(day => new TripDayResponse(
+            .Select(day => new DayResponse(
                 DayNumber: day.DayNumber,
                 Title: day.Title,
                 Description: day.Description,
                 Activities: day.Activities
-                    .Select(activity => new TripActivityResponse(
+                    .Select(activity => new ActivityResponse(
                         TimeOfDay: activity.TimeOfDay,
                         Title: activity.Title,
                         Description: activity.Description,
@@ -53,7 +53,7 @@ public static class GenerateTripMapper
             Highlights: tripPlan.Highlights,
             TravelTips: tripPlan.TravelTips,
             ValidationIssues: tripPlan.ValidationIssues
-                .Select(issue => new TripValidationIssueResponse(
+                .Select(issue => new ValidationIssueResponse(
                     Code: issue.Code,
                     Message: issue.Message,
                     Severity: issue.Severity))
