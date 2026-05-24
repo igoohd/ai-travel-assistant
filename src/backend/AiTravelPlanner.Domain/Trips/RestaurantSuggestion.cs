@@ -1,3 +1,5 @@
+namespace AiTravelPlanner.Domain.Trips;
+
 public sealed record RestaurantSuggestion(
     string Name,
     string Cuisine,

@@ -13,7 +13,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         _tripPlanGenerator = tripPlanGenerator;
     }
 
-    public TripPlan Handle(GenerateTripCommand command)
+    public Plan Handle(GenerateTripCommand command)
     {
         return _tripPlanGenerator.Generate(command);
     }

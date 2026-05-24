@@ -5,5 +5,5 @@ namespace AiTravelPlanner.Application.Trips.Services;
 
 public interface ITripPlanGenerator
 {
-    TripPlan Generate(GenerateTripCommand command);
+    Plan Generate(GenerateTripCommand command);
 }

@@ -1,12 +1,12 @@
 namespace AiTravelPlanner.Domain.Trips;
 
-public sealed record TripPlan(
+public sealed record Plan(
     string Destination,
     int NumberOfDays,
     string Overview,
-    IReadOnlyList<TripDay> Days,
+    IReadOnlyList<Day> Days,
     BudgetEstimate Budget,
     IReadOnlyList<string> Highlights,
     IReadOnlyList<string> TravelTips,
-    IReadOnlyList<TripValidationIssue> ValidationIssues
+    IReadOnlyList<ValidationIssue> ValidationIssues
 );

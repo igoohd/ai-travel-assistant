@@ -4,7 +4,7 @@ using AiTravelPlanner.Domain.Trips;
 
 public class StubTripPlanGenerator : ITripPlanGenerator
 {
-    public TripPlan Generate(GenerateTripCommand command)
+    public Plan Generate(GenerateTripCommand command)
     {
         if (command.NumberOfDays <= 0)
         {
@@ -31,23 +31,23 @@ public class StubTripPlanGenerator : ITripPlanGenerator
                 ? fallbackInterest
                 : interests[(day - 1) % interests.Length];
 
-                return new TripDay(
+                return new Day(
                     DayNumber: day,
                     Title: $"Day {day} in {command.Destination}",
                     Description: "A placeholder day plan.",
                     Activities:
                     [
-                        new TripActivity(
+                        new Activity(
                             TimeOfDay: "Morning",
                             Title: $"{command.Destination} orientation walk",
                             Description: "Start with a relaxed walk through a central neighborhood.",
                             EstimatedCost: activityCost),
-                        new TripActivity(
+                        new Activity(
                             TimeOfDay: "Afternoon",
                             Title: $"{theme} experience",
                             Description: $"Explore a recommended place or activity connected to {theme}.",
                             EstimatedCost: activityCost),
-                        new TripActivity(
+                        new Activity(
                             TimeOfDay: "Evening",
                             Title: "Local dinner area",
                             Description: "End the day near a lively food or entertainment district.",
@@ -71,11 +71,11 @@ public class StubTripPlanGenerator : ITripPlanGenerator
             Total: command.Budget,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
-        var validationIssues = new List<TripValidationIssue>();
+        var validationIssues = new List<ValidationIssue>();
 
         if (days.Any(day => day.Activities.Count > 4))
         {
-            validationIssues.Add(new TripValidationIssue(
+            validationIssues.Add(new ValidationIssue(
                 Code: "TOO_MANY_ACTIVITIES",
                 Message: "One or more days has too many activities.",
                 Severity: "warning"));
@@ -83,13 +83,13 @@ public class StubTripPlanGenerator : ITripPlanGenerator
 
         if (budget.Total > command.Budget)
         {
-            validationIssues.Add(new TripValidationIssue(
+            validationIssues.Add(new ValidationIssue(
                 Code: "BUDGET_EXCEEDED",
                 Message: "Estimated trip cost exceeds the requested budget.",
                 Severity: "error"));
         }
 
-        return new TripPlan(
+        return new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",

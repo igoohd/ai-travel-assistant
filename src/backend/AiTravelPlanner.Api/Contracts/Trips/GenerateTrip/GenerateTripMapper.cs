@@ -14,7 +14,7 @@ public static class GenerateTripMapper
             Interests: request.Interests);
     }
 
-    public static GenerateTripResponse ToResponse(this TripPlan tripPlan)
+    public static GenerateTripResponse ToResponse(this Plan tripPlan)
     {
         var days = tripPlan.Days
             .Select(day => new TripDayResponse(

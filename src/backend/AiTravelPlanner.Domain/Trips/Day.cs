@@ -1,8 +1,8 @@
 namespace AiTravelPlanner.Domain.Trips;
 
-public sealed record TripDay(
+public sealed record Day(
     int DayNumber,
     string Title,
     string Description,
-    IReadOnlyCollection<TripActivity> Activities,
+    IReadOnlyCollection<Activity> Activities,
     IReadOnlyCollection<RestaurantSuggestion> Restaurants);
