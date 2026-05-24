@@ -51,7 +51,7 @@ public static class GenerateTripMapper
                 Activities: tripPlan.Budget.Activities,
                 Total: tripPlan.Budget.Total,
                 Category: tripPlan.Budget.Category,
-                Currency: tripPlan.Budget.Currency),
+                Currency: tripPlan.Budget.Currency.Value),
             Highlights: tripPlan.Highlights,
             TravelTips: tripPlan.TravelTips,
             ValidationIssues: tripPlan.ValidationIssues

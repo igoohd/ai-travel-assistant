@@ -1,8 +1,9 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Domain.Trips;
 
-public class StubTripPlanGenerator : ITripPlanGenerator
+namespace AiTravelPlanner.Application.Trips.Services;
+
+public sealed class StubTripPlanGenerator : ITripPlanGenerator
 {
     public Plan Generate(GenerateTripCommand command)
     {
@@ -63,13 +64,15 @@ public class StubTripPlanGenerator : ITripPlanGenerator
                     ]);
             }).ToArray();
 
+        var currency = new CurrencyCode(command.Currency);
+
         var budget = new BudgetEstimate(
             Hotel: Math.Round(command.Budget * 0.40m, 2),
             Transportation: Math.Round(command.Budget * 0.15m, 2),
             Food: Math.Round(command.Budget * 0.25m, 2),
             Activities: Math.Round(command.Budget * 0.20m, 2),
             Total: command.Budget,
-            Currency: command.Currency,
+            Currency: currency,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
         var validationIssues = new List<ValidationIssue>();

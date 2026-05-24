@@ -6,5 +6,5 @@ public sealed record BudgetEstimate(
     decimal Food,
     decimal Activities,
     decimal Total,
-    string Currency,
+    CurrencyCode Currency,
     string Category);
