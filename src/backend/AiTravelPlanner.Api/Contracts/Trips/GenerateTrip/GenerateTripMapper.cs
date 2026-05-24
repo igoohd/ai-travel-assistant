@@ -26,7 +26,14 @@ public static class GenerateTripMapper
                         TimeOfDay: activity.TimeOfDay,
                         Title: activity.Title,
                         Description: activity.Description))
-                    .ToArray()))
+                    .ToArray(),
+                Restaurants: day.Restaurants
+                    .Select(restaurant => new RestaurantSuggestionResponse(
+                        Name: restaurant.Name,
+                        Cuisine: restaurant.Cuisine,
+                        Notes: restaurant.Notes))
+                    .ToArray())
+            )
             .ToArray();
 
         return new GenerateTripResponse(

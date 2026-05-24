@@ -45,6 +45,13 @@ public class StubTripPlanGenerator : ITripPlanGenerator
                             TimeOfDay: "Evening",
                             Title: "Local dinner area",
                             Description: "End the day near a lively food or entertainment district.")
+                    ],
+                    Restaurants:
+                    [
+                        new RestaurantSuggestion(
+                            Name: $"{command.Destination} local favorite",
+                            Cuisine: "Local",
+                            Notes: $"A placeholder restaurant suggestion for a {theme}-focused day.")
                     ]);
             }).ToArray();
 

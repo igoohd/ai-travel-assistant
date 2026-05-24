@@ -14,7 +14,8 @@ public sealed record TripDayResponse(
 int DayNumber,
 string Title,
 string Description,
-IReadOnlyCollection<TripActivityResponse> Activities);
+IReadOnlyCollection<TripActivityResponse> Activities,
+IReadOnlyCollection<RestaurantSuggestionResponse> Restaurants);
 
 public sealed record TripActivityResponse(
     string TimeOfDay,
@@ -29,3 +30,9 @@ public sealed record BudgetEstimateResponse(
     decimal Activities,
     decimal Total,
     string Category);
+
+public sealed record RestaurantSuggestionResponse(
+    string Name,
+    string Cuisine,
+    string Notes
+);
