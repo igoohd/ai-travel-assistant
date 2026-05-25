@@ -68,14 +68,6 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
             Currency: currency,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
-        var validationIssues = new List<ValidationIssue>();
-
-        var estimatedItineraryCost = days.Sum(day =>
-            day.Activities.Sum(activity => activity.EstimatedCost)
-            + day.Restaurants.Sum(restaurant => restaurant.EstimatedCost));
-
-        var plannedDailyExperienceBudget = budget.Food + budget.Activities;
-
         return new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
@@ -93,8 +85,7 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
                 "Book popular restaurants and attractions in advance.",
                 "Group nearby activities together to reduce transit time.",
                 "Keep a small contingency budget for local transportation."
-            ],
-            ValidationIssues: validationIssues
+            ]
         );
     }
 
@@ -110,39 +101,4 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
         };
     }
 
-    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
-    {
-        if (command.NumberOfDays <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(command.NumberOfDays),
-                "Number of days must be greater than zero.");
-        }
-
-        var issues = new List<ValidationIssue>();
-
-        if (plan.Days.Any(day => day.Activities.Count > 4))
-        {
-            issues.Add(new ValidationIssue(
-                Code: ValidationIssueCodes.TooManyActivities,
-                Message: "One or more days has too many activities.",
-                Severity: ValidationSeverity.Warning));
-        }
-
-        var estimatedExperienceCost = plan.Days.Sum(day =>
-            day.Activities.Sum(activity => activity.EstimatedCost)
-            + day.Restaurants.Sum(restaurant => restaurant.EstimatedCost));
-
-        var plannedExperienceBudget = plan.Budget.Food + plan.Budget.Activities;
-
-        if (estimatedExperienceCost > plannedExperienceBudget)
-        {
-            issues.Add(new ValidationIssue(
-                Code: ValidationIssueCodes.BudgetExceeded,
-                Message: "Estimated activity and restaurant costs exceed the planned experience budget.",
-                Severity: ValidationSeverity.Warning));
-        }
-
-        return issues;
-    }
 }

@@ -29,6 +29,6 @@ public sealed class TripsController : ControllerBase
             return BadRequest(result.Errors);
         }
 
-        return Ok(result.Plan!.ToResponse());
+        return Ok(result.ToResponse());
     }
 }

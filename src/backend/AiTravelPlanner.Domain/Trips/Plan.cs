@@ -7,6 +7,5 @@ public sealed record Plan(
     IReadOnlyList<Day> Days,
     BudgetEstimate Budget,
     IReadOnlyList<string> Highlights,
-    IReadOnlyList<string> TravelTips,
-    IReadOnlyList<ValidationIssue> ValidationIssues
+    IReadOnlyList<string> TravelTips
 );

@@ -5,12 +5,15 @@ namespace AiTravelPlanner.Application.Trips.GenerateTrip;
 
 public sealed class GenerateTripHandler : IGenerateTripUseCase
 {
-
     private readonly ITripPlanGenerator _tripPlanGenerator;
+    private readonly ITripPlanValidator _tripPlanValidator;
 
-    public GenerateTripHandler(ITripPlanGenerator tripPlanGenerator)
+    public GenerateTripHandler(
+        ITripPlanGenerator tripPlanGenerator,
+        ITripPlanValidator tripPlanValidator)
     {
         _tripPlanGenerator = tripPlanGenerator;
+        _tripPlanValidator = tripPlanValidator;
     }
 
     public GenerateTripResult Handle(GenerateTripCommand command)
@@ -24,12 +27,8 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         }
 
         var plan = _tripPlanGenerator.Generate(command);
-        var validationIssues = _tripPlanGenerator.Validate(plan, command);
+        var validationIssues = _tripPlanValidator.Validate(plan);
 
-        return GenerateTripResult.Success(plan with
-        {
-            ValidationIssues = validationIssues
-        });
-
+        return GenerateTripResult.Success(plan, validationIssues);
     }
 }

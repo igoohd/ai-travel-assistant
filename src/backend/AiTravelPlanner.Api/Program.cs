@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<ITripPlanGenerator, StubTripPlanGenerator>();
+//builder.Services.AddScoped<ITripPlanGenerator, StubTripPlanGenerator>();
+builder.Services.AddScoped<ITripPlanGenerator, GitHubModelsTripPlanGenerator>();
+builder.Services.AddScoped<ITripPlanValidator, TripPlanValidator>();
 builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
 
 builder.Services

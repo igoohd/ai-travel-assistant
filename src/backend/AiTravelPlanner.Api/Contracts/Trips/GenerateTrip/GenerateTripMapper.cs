@@ -15,8 +15,11 @@ public static class GenerateTripMapper
             Interests: request.Interests);
     }
 
-    public static GenerateTripResponse ToResponse(this Plan tripPlan)
+    public static GenerateTripResponse ToResponse(this GenerateTripResult result)
     {
+        var tripPlan = result.Plan
+            ?? throw new InvalidOperationException("Cannot map a failed trip generation result to a response.");
+
         var days = tripPlan.Days
             .Select(day => new DayResponse(
                 DayNumber: day.DayNumber,
@@ -54,7 +57,7 @@ public static class GenerateTripMapper
                 Currency: tripPlan.Budget.Currency.Value),
             Highlights: tripPlan.Highlights,
             TravelTips: tripPlan.TravelTips,
-            ValidationIssues: tripPlan.ValidationIssues
+            ValidationIssues: result.ValidationIssues
                 .Select(issue => new ValidationIssueResponse(
                     Code: issue.Code,
                     Message: issue.Message,
