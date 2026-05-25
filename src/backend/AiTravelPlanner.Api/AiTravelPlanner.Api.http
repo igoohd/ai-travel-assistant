@@ -1,6 +1,32 @@
-@AiTravelPlanner.Api_HostAddress = http://localhost:5122
+@host = http://localhost:5122
 
-GET {{AiTravelPlanner.Api_HostAddress}}/weatherforecast/
+### Generate trip
+
+POST {{host}}/api/trips/generate
 Accept: application/json
+Content-Type: application/json
 
-###
+{
+  "destination": "Japan",
+  "numberOfDays": 5,
+  "budget": 2500,
+  "currency": "USD",
+  "interests": [
+    "food",
+    "technology"
+  ]
+}
+
+### Generate trip - invalid request
+
+POST {{host}}/api/trips/generate
+Accept: application/json
+Content-Type: application/json
+
+{
+  "destination": "",
+  "numberOfDays": 0,
+  "budget": 0,
+  "currency": "US",
+  "interests": []
+}
