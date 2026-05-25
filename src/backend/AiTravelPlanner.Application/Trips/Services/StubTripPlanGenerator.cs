@@ -85,12 +85,18 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
                 Severity: ValidationSeverity.Warning));
         }
 
-        if (budget.Total > command.Budget)
+        var estimatedItineraryCost = days.Sum(day =>
+            day.Activities.Sum(activity => activity.EstimatedCost)
+            + day.Restaurants.Sum(restaurant => restaurant.EstimatedCost));
+
+        var plannedDailyExperienceBudget = budget.Food + budget.Activities;
+
+        if (estimatedItineraryCost > plannedDailyExperienceBudget)
         {
             validationIssues.Add(new ValidationIssue(
                 Code: ValidationIssueCodes.BudgetExceeded,
-                Message: "Estimated trip cost exceeds the requested budget.",
-                Severity: ValidationSeverity.Error));
+                Message: "Estimated activity and restaurant costs exceed the planned experience budget.",
+                Severity: ValidationSeverity.Warning));
         }
 
         return new Plan(
