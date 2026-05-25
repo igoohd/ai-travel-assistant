@@ -58,7 +58,7 @@ public static class GenerateTripMapper
                 .Select(issue => new ValidationIssueResponse(
                     Code: issue.Code,
                     Message: issue.Message,
-                    Severity: issue.Severity))
+                    Severity: issue.Severity.ToString()))
                 .ToArray());
     }
 }

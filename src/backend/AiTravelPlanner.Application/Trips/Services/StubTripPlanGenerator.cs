@@ -80,17 +80,17 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
         if (days.Any(day => day.Activities.Count > 4))
         {
             validationIssues.Add(new ValidationIssue(
-                Code: "TOO_MANY_ACTIVITIES",
+                Code: ValidationIssueCodes.TooManyActivities,
                 Message: "One or more days has too many activities.",
-                Severity: "warning"));
+                Severity: ValidationSeverity.Warning));
         }
 
         if (budget.Total > command.Budget)
         {
             validationIssues.Add(new ValidationIssue(
-                Code: "BUDGET_EXCEEDED",
+                Code: ValidationIssueCodes.BudgetExceeded,
                 Message: "Estimated trip cost exceeds the requested budget.",
-                Severity: "error"));
+                Severity: ValidationSeverity.Error));
         }
 
         return new Plan(
