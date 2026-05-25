@@ -22,8 +22,11 @@ public sealed class TripsController : ControllerBase
 
         var tripPlan = _generateTripUseCase.Handle(command);
 
-        var response = tripPlan.ToResponse();
+        if (!tripPlan.IsSuccess)
+        {
+            return BadRequest(tripPlan.Errors);
+        }
 
-        return Ok(response);
+        return Ok(tripPlan.Plan!.ToResponse());
     }
 }

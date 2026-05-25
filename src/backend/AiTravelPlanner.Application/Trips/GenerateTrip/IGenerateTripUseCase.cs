@@ -4,5 +4,5 @@ namespace AiTravelPlanner.Application.Trips.GenerateTrip;
 
 public interface IGenerateTripUseCase
 {
-    Plan Handle(GenerateTripCommand command);
+    GenerateTripResult Handle(GenerateTripCommand command);
 }

@@ -13,14 +13,23 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         _tripPlanGenerator = tripPlanGenerator;
     }
 
-    public Plan Handle(GenerateTripCommand command)
+    public GenerateTripResult Handle(GenerateTripCommand command)
     {
+        if (command.NumberOfDays <= 0)
+        {
+            return GenerateTripResult.Failure(
+            [
+                "Number of days must be greater than zero."
+            ]);
+        }
+
         var plan = _tripPlanGenerator.Generate(command);
         var validationIssues = _tripPlanGenerator.Validate(plan, command);
 
-        return plan with
+        return GenerateTripResult.Success(plan with
         {
             ValidationIssues = validationIssues
-        };
+        });
+
     }
 }
