@@ -13,7 +13,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         _client = client;
     }
 
-    public Plan Generate(GenerateTripCommand command)
+    public async Task<Plan> GenerateAsync(GenerateTripCommand command)
     {
         var prompt = $"""
             Create a short travel plan overview.
@@ -26,7 +26,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
             Return only a concise overview paragraph.
             """;
 
-        var overview = _client.CompleteChatAsync(
+        var overview = await _client.CompleteChatAsync(
             [
                 new GitHubModelsMessage(
                     Role: "system",
@@ -34,9 +34,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                 new GitHubModelsMessage(
                     Role: "user",
                     Content: prompt)
-            ])
-            .GetAwaiter()
-            .GetResult();
+            ]);
 
         var currency = new CurrencyCode(command.Currency);
 

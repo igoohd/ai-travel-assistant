@@ -5,7 +5,7 @@ namespace AiTravelPlanner.Application.Trips.Services;
 
 public sealed class StubTripPlanGenerator : ITripPlanGenerator
 {
-    public Plan Generate(GenerateTripCommand command)
+    public Task<Plan> GenerateAsync(GenerateTripCommand command)
     {
         var interests = command.Interests
             .Where(interest => !string.IsNullOrWhiteSpace(interest))
@@ -68,7 +68,7 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
             Currency: currency,
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
-        return new Plan(
+        var plan = new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",
@@ -87,6 +87,8 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
                 "Keep a small contingency budget for local transportation."
             ]
         );
+
+        return Task.FromResult(plan);
     }
 
     private static string ClassifyBudget(decimal budget, int numberOfDays)

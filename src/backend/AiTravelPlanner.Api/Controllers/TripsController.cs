@@ -18,11 +18,11 @@ public sealed class TripsController : ControllerBase
     [HttpPost("generate")]
     [ProducesResponseType<GenerateTripResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<GenerateTripResponse> GenerateTrip([FromBody] GenerateTripRequest request)
+    public async Task<ActionResult<GenerateTripResponse>> GenerateTrip([FromBody] GenerateTripRequest request)
     {
         var command = request.ToCommand();
 
-        var result = _generateTripUseCase.Handle(command);
+        var result = await _generateTripUseCase.HandleAsync(command);
 
         if (!result.IsSuccess)
         {

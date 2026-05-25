@@ -16,7 +16,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         _tripPlanValidator = tripPlanValidator;
     }
 
-    public GenerateTripResult Handle(GenerateTripCommand command)
+    public async Task<GenerateTripResult> HandleAsync(GenerateTripCommand command)
     {
         if (command.NumberOfDays <= 0)
         {
@@ -26,7 +26,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        var plan = _tripPlanGenerator.Generate(command);
+        var plan = await _tripPlanGenerator.GenerateAsync(command);
         var validationIssues = _tripPlanValidator.Validate(plan);
 
         return GenerateTripResult.Success(plan, validationIssues);
