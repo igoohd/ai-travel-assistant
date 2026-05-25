@@ -45,4 +45,24 @@ POST /api/trips/generate
 
 The current trip generator is `StubTripPlanGenerator`.
 
-It uses deterministic placeholder logic instead of AI. This keeps the first version simple while preserving a clean place to introduce OpenAI later.
+It uses deterministic placeholder logic instead of AI. This keeps the first version simple while preserving a clean place to introduce a real AI provider later.
+
+## GitHub Models Setup
+
+GitHub Models configuration lives under:
+
+```text
+AiProviders:GitHubModels
+```
+
+Non-secret development settings are stored in `AiTravelPlanner.Api/appsettings.Development.json`.
+
+The GitHub token must not be committed. Store it with .NET user-secrets:
+
+```bash
+dotnet user-secrets set "AiProviders:GitHubModels:Token" "YOUR_GITHUB_TOKEN" --project src/backend/AiTravelPlanner.Api
+```
+
+The token needs permission to use GitHub Models. For a fine-grained personal access token, GitHub's REST API docs describe the required scope as `models: read`.
+
+The current app still uses `StubTripPlanGenerator`; GitHub Models is configured but not called yet.
