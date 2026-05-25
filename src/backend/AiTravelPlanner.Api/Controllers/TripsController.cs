@@ -16,17 +16,19 @@ public sealed class TripsController : ControllerBase
     }
 
     [HttpPost("generate")]
+    [ProducesResponseType<GenerateTripResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<GenerateTripResponse> GenerateTrip([FromBody] GenerateTripRequest request)
     {
         var command = request.ToCommand();
 
-        var tripPlan = _generateTripUseCase.Handle(command);
+        var result = _generateTripUseCase.Handle(command);
 
-        if (!tripPlan.IsSuccess)
+        if (!result.IsSuccess)
         {
-            return BadRequest(tripPlan.Errors);
+            return BadRequest(result.Errors);
         }
 
-        return Ok(tripPlan.Plan!.ToResponse());
+        return Ok(result.Plan!.ToResponse());
     }
 }
