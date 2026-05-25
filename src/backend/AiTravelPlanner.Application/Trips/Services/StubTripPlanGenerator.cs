@@ -7,13 +7,6 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
 {
     public Plan Generate(GenerateTripCommand command)
     {
-        if (command.NumberOfDays <= 0)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(command.NumberOfDays),
-                "Number of days must be greater than zero.");
-        }
-
         var interests = command.Interests
             .Where(interest => !string.IsNullOrWhiteSpace(interest))
             .Select(interest => interest.Trim())
@@ -77,27 +70,11 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
 
         var validationIssues = new List<ValidationIssue>();
 
-        if (days.Any(day => day.Activities.Count > 4))
-        {
-            validationIssues.Add(new ValidationIssue(
-                Code: ValidationIssueCodes.TooManyActivities,
-                Message: "One or more days has too many activities.",
-                Severity: ValidationSeverity.Warning));
-        }
-
         var estimatedItineraryCost = days.Sum(day =>
             day.Activities.Sum(activity => activity.EstimatedCost)
             + day.Restaurants.Sum(restaurant => restaurant.EstimatedCost));
 
         var plannedDailyExperienceBudget = budget.Food + budget.Activities;
-
-        if (estimatedItineraryCost > plannedDailyExperienceBudget)
-        {
-            validationIssues.Add(new ValidationIssue(
-                Code: ValidationIssueCodes.BudgetExceeded,
-                Message: "Estimated activity and restaurant costs exceed the planned experience budget.",
-                Severity: ValidationSeverity.Warning));
-        }
 
         return new Plan(
             Destination: command.Destination,
@@ -131,5 +108,41 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
             < 300 => "mid-range",
             _ => "luxury"
         };
+    }
+
+    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
+    {
+        if (command.NumberOfDays <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(command.NumberOfDays),
+                "Number of days must be greater than zero.");
+        }
+
+        var issues = new List<ValidationIssue>();
+
+        if (plan.Days.Any(day => day.Activities.Count > 4))
+        {
+            issues.Add(new ValidationIssue(
+                Code: ValidationIssueCodes.TooManyActivities,
+                Message: "One or more days has too many activities.",
+                Severity: ValidationSeverity.Warning));
+        }
+
+        var estimatedExperienceCost = plan.Days.Sum(day =>
+            day.Activities.Sum(activity => activity.EstimatedCost)
+            + day.Restaurants.Sum(restaurant => restaurant.EstimatedCost));
+
+        var plannedExperienceBudget = plan.Budget.Food + plan.Budget.Activities;
+
+        if (estimatedExperienceCost > plannedExperienceBudget)
+        {
+            issues.Add(new ValidationIssue(
+                Code: ValidationIssueCodes.BudgetExceeded,
+                Message: "Estimated activity and restaurant costs exceed the planned experience budget.",
+                Severity: ValidationSeverity.Warning));
+        }
+
+        return issues;
     }
 }

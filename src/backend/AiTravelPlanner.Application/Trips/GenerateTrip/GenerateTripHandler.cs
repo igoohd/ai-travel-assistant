@@ -15,6 +15,12 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
 
     public Plan Handle(GenerateTripCommand command)
     {
-        return _tripPlanGenerator.Generate(command);
+        var plan = _tripPlanGenerator.Generate(command);
+        var validationIssues = _tripPlanGenerator.Validate(plan, command);
+
+        return plan with
+        {
+            ValidationIssues = validationIssues
+        };
     }
 }
