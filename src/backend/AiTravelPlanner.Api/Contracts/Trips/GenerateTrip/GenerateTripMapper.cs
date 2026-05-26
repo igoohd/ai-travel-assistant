@@ -43,6 +43,7 @@ public static class GenerateTripMapper
             .ToArray();
 
         return new GenerateTripResponse(
+            Id: tripPlan.Id,
             Destination: tripPlan.Destination,
             NumberOfDays: tripPlan.NumberOfDays,
             Days: days,

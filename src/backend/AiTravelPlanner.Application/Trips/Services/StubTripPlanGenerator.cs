@@ -78,6 +78,7 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
             Category: ClassifyBudget(command.Budget, command.NumberOfDays));
 
         var plan = new Plan(
+            Id: Guid.NewGuid(),
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: days,

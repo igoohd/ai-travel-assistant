@@ -140,6 +140,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         var estimatedTotal = hotelTotal + transportationTotal + foodTotal + activityTotal;
 
         return new Plan(
+            Id: Guid.NewGuid(),
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: generatedPlan.Days

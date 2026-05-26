@@ -1,6 +1,7 @@
 namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
 public sealed record GenerateTripResponse(
+    Guid Id,
     string Destination,
     int NumberOfDays,
     IReadOnlyCollection<DayResponse> Days,
