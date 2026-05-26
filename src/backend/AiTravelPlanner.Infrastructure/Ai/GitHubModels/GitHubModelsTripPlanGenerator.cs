@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Domain.Trips;
@@ -15,18 +16,37 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 
     public async Task<Plan> GenerateAsync(GenerateTripCommand command)
     {
-        var prompt = $"""
-            Create a short travel plan overview.
+        var prompt = @"Return only valid JSON matching this shape:
+        {
+            ""overview"": ""string"",
+            ""days"": [
+                {
+                ""dayNumber"": 1,
+                ""title"": ""string"",
+                ""description"": ""string"",
+                ""activities"": [
+                    {
+                    ""timeOfDay"": ""Morning"",
+                    ""title"": ""string"",
+                    ""description"": ""string"",
+                    ""estimatedCost"": 50
+                    }
+                ],
+                ""restaurants"": [
+                    {
+                    ""name"": ""string"",
+                    ""cuisine"": ""string"",
+                    ""notes"": ""string"",
+                    ""estimatedCost"": 40
+                    }
+                ]
+                }
+            ],
+            ""highlights"": [""string""],
+            ""travelTips"": [""string""]
+        }";
 
-            Destination: {command.Destination}
-            Days: {command.NumberOfDays}
-            Budget: {command.Budget} {command.Currency}
-            Interests: {string.Join(", ", command.Interests)}
-
-            Return only a concise overview paragraph.
-            """;
-
-        var overview = await _client.CompleteChatAsync(
+        var content = await _client.CompleteChatAsync(
             [
                 new GitHubModelsMessage(
                     Role: "system",
@@ -36,13 +56,45 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                     Content: prompt)
             ]);
 
+        var generatedPlan = JsonSerializer.Deserialize<GeneratedTripPlan>(
+            content,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            }
+        );
+
+        if (generatedPlan is null)
+        {
+            throw new InvalidOperationException("GitHub Models returned an invalid trip plan.");
+        }
+
         var currency = new CurrencyCode(command.Currency);
 
         return new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
-            Overview: overview,
-            Days: [],
+            Overview: generatedPlan.Overview,
+            Days: generatedPlan.Days
+                .Select(day => new Day(
+                    DayNumber: day.DayNumber,
+                    Title: day.Title,
+                    Description: day.Description,
+                    Activities: day.Activities
+                        .Select(activity => new Activity(
+                            TimeOfDay: activity.TimeOfDay,
+                            Title: activity.Title,
+                            Description: activity.Description,
+                            EstimatedCost: activity.EstimatedCost))
+                        .ToArray(),
+                    Restaurants: day.Restaurants
+                        .Select(restaurant => new RestaurantSuggestion(
+                            Name: restaurant.Name,
+                            Cuisine: restaurant.Cuisine,
+                            Notes: restaurant.Notes,
+                            EstimatedCost: restaurant.EstimatedCost))
+                        .ToArray()))
+                .ToArray(),
             Budget: new BudgetEstimate(
                 Hotel: 0,
                 Transportation: 0,
@@ -51,7 +103,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                 Total: command.Budget,
                 Currency: currency,
                 Category: "unknown"),
-            Highlights: [],
-            TravelTips: []);
+            Highlights: generatedPlan.Highlights,
+            TravelTips: generatedPlan.TravelTips);
     }
 }
