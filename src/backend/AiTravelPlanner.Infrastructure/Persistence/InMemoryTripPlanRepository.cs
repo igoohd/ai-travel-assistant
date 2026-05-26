@@ -4,14 +4,24 @@ using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Infrastructure.Persistence;
 
-public sealed class NoOpTripPlanRepository : ITripPlanRepository
+public sealed class InMemoryTripPlanRepository : ITripPlanRepository
 {
+    private static readonly Dictionary<Guid, Plan> Plans = new();
+
     public Task SaveAsync(
         Plan plan,
         GenerateTripCommand command,
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken)
     {
+        Plans[plan.Id] = plan;
         return Task.CompletedTask;
     }
+
+    public Task<Plan?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        Plans.TryGetValue(id, out var plan);
+        return Task.FromResult(plan);
+    }
+
 }

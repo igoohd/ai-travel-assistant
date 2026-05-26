@@ -10,4 +10,6 @@ public interface ITripPlanRepository
         GenerateTripCommand command,
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken);
+
+    Task<Plan?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }

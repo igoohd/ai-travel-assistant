@@ -1,4 +1,5 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
+using AiTravelPlanner.Application.Trips.GetTrip;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
@@ -24,6 +25,7 @@ else
 
 builder.Services.AddScoped<ITripPlanValidator, TripPlanValidator>();
 builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
+builder.Services.AddScoped<IGetTripUseCase, GetTripHandler>();
 
 builder.Services
     .AddOptions<GitHubModelsOptions>()
@@ -34,7 +36,7 @@ builder.Services
     .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "GitHub Models temperature must be between 0 and 1.");
 builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
 
-builder.Services.AddScoped<ITripPlanRepository, NoOpTripPlanRepository>();
+builder.Services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 
 var app = builder.Build();
 

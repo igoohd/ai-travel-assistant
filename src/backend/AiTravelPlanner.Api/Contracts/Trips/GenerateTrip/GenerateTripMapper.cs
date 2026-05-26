@@ -1,4 +1,5 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
+using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
@@ -65,5 +66,14 @@ public static class GenerateTripMapper
                     Message: issue.Message,
                     Severity: issue.Severity.ToString()))
                 .ToArray());
+    }
+
+    public static GenerateTripResponse ToResponse(this Plan tripPlan)
+    {
+        return new GenerateTripResult(
+            Plan: tripPlan,
+            ValidationIssues: [],
+            Errors: [])
+            .ToResponse();
     }
 }
