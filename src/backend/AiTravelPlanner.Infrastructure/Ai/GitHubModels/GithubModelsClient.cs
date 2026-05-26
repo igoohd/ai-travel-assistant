@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
@@ -8,13 +9,16 @@ public sealed class GitHubModelsClient : IGitHubModelsClient
 {
     private readonly HttpClient _httpClient;
     private readonly GitHubModelsOptions _options;
+    private readonly ILogger<GitHubModelsClient> _logger;
 
     public GitHubModelsClient(
         HttpClient httpClient,
-        IOptions<GitHubModelsOptions> options)
+        IOptions<GitHubModelsOptions> options,
+        ILogger<GitHubModelsClient> logger)
     {
         _httpClient = httpClient;
         _options = options.Value;
+        _logger = logger;
     }
 
     public async Task<string> CompleteChatAsync(
@@ -48,9 +52,19 @@ public sealed class GitHubModelsClient : IGitHubModelsClient
             temperature = _options.Temperature
         });
 
+        _logger.LogInformation(
+            "Calling GitHub Models. Model: {Model}",
+            _options.Model
+        );
+
         using var response = await _httpClient.SendAsync(request, cancellationToken);
 
         response.EnsureSuccessStatusCode();
+
+        _logger.LogInformation(
+            "GitHub Models responded with status code {StatusCode}.",
+            response.StatusCode
+        );
 
         var completion = await response.Content
             .ReadFromJsonAsync<GitHubModelsChatCompletionResponse>(cancellationToken);

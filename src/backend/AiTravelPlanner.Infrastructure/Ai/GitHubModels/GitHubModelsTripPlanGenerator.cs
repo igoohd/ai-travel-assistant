@@ -2,16 +2,19 @@ using System.Text.Json;
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Domain.Trips;
+using Microsoft.Extensions.Logging;
 
 namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
 public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 {
     private readonly IGitHubModelsClient _client;
+    private readonly ILogger<GitHubModelsTripPlanGenerator> _logger;
 
-    public GitHubModelsTripPlanGenerator(IGitHubModelsClient client)
+    public GitHubModelsTripPlanGenerator(IGitHubModelsClient client, ILogger<GitHubModelsTripPlanGenerator> logger)
     {
         _client = client;
+        _logger = logger;
     }
 
     public async Task<Plan> GenerateAsync(GenerateTripCommand command)
@@ -99,6 +102,11 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         {
             throw new InvalidOperationException("GitHub Models returned an invalid trip plan.");
         }
+
+        _logger.LogInformation(
+            "GitHub Models generated trip plan JSON with {DayCount} days.",
+            generatedPlan.Days.Count
+        );
 
         var currency = new CurrencyCode(command.Currency);
 
