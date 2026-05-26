@@ -5,5 +5,6 @@ public static class ValidationIssueCodes
     public const string TooManyActivities = "TOO_MANY_ACTIVITIES";
     public const string BudgetExceeded = "BUDGET_EXCEEDED";
     public const string UnrealisticSchedule = "UNREALISTIC_SCHEDULE";
+    public const string UnrealisticTransportation = "UNREALISTIC_TRANSPORTATION";
 
 }

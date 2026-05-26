@@ -42,6 +42,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         - Do not wrap the JSON in Markdown.
         - Do not include explanations outside the JSON.
         - Each activity must include durationHours as a number between 0.5 and 4.
+        - transitMinutesFromPrevious must be 0 for the first activity of each day.
+        - transitMinutesFromPrevious should be a realistic number between 0 and 90.
 
         Additional instruction:
         - {{additionalInstructionText}}
@@ -148,7 +150,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                             Title: activity.Title,
                             Description: activity.Description,
                             EstimatedCost: activity.EstimatedCost,
-                            DurationHours: activity.DurationHours))
+                            DurationHours: activity.DurationHours,
+                            TransitMinutesFromPrevious: activity.TransitMinutesFromPrevious))
                         .ToArray(),
                     Restaurants: day.Restaurants
                         .Select(restaurant => new RestaurantSuggestion(

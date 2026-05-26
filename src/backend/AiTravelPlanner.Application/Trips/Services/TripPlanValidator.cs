@@ -47,6 +47,14 @@ public sealed class TripPlanValidator : ITripPlanValidator
                 Severity: ValidationSeverity.Warning));
         }
 
+        if (plan.Days.Any(day => day.Activities.Sum(activity => activity.TransitMinutesFromPrevious) > 180))
+        {
+            issues.Add(new ValidationIssue(
+                Code: ValidationIssueCodes.UnrealisticTransportation,
+                Message: "One or more days has more than 3 hours of estimated transit time.",
+                Severity: ValidationSeverity.Warning));
+        }
+
         return issues;
     }
 }

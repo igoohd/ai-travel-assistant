@@ -5,5 +5,6 @@ public sealed record Activity(
     string Title,
     string Description,
     decimal EstimatedCost,
-    decimal DurationHours
+    decimal DurationHours,
+    decimal TransitMinutesFromPrevious
 );
