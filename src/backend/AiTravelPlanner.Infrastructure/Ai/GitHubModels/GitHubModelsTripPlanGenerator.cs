@@ -138,7 +138,6 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         return new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
-            Overview: generatedPlan.Overview,
             Days: generatedPlan.Days
                 .Select(day => new Day(
                     DayNumber: day.DayNumber,
@@ -169,8 +168,12 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                 Total: estimatedTotal,
                 Currency: currency,
                 Category: ClassifyBudget(estimatedTotal, command.NumberOfDays)),
-            Highlights: generatedPlan.Highlights,
-            TravelTips: generatedPlan.TravelTips);
+            Summary: new Summary(
+                Highlights: generatedPlan.Highlights,
+                TravelTips: generatedPlan.TravelTips,
+                Overview: generatedPlan.Overview
+            )
+        );
     }
 
     private static string ExtractJsonObject(string content)

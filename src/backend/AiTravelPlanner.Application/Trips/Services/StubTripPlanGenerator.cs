@@ -36,19 +36,22 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
                             Title: $"{command.Destination} orientation walk",
                             Description: "Start with a relaxed walk through a central neighborhood.",
                             EstimatedCost: activityCost,
-                            DurationHours: 2),
+                            DurationHours: 2,
+                            TransitMinutesFromPrevious: 0),
                         new Activity(
                             TimeOfDay: "Afternoon",
                             Title: $"{theme} experience",
                             Description: $"Explore a recommended place or activity connected to {theme}.",
                             EstimatedCost: activityCost,
-                            DurationHours: 3),
+                            DurationHours: 3,
+                            TransitMinutesFromPrevious: 30),
                         new Activity(
                             TimeOfDay: "Evening",
                             Title: "Local dinner area",
                             Description: "End the day near a lively food or entertainment district.",
                             EstimatedCost: activityCost,
-                            DurationHours: 2)
+                            DurationHours: 2,
+                            TransitMinutesFromPrevious: 15)
                     ],
                     Restaurants:
                     [
@@ -74,21 +77,23 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
         var plan = new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
-            Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",
             Days: days,
             Budget: budget,
-            Highlights:
-            [
-                $"Explore {command.Destination} through {string.Join(", ", interests.DefaultIfEmpty(fallbackInterest))}.",
-                "Balance planned activities with flexible discovery time.",
-                "Use the daily themes to keep the itinerary focused."
-            ],
-            TravelTips:
-            [
-                "Book popular restaurants and attractions in advance.",
-                "Group nearby activities together to reduce transit time.",
-                "Keep a small contingency budget for local transportation."
-            ]
+            Summary: new Summary(
+                Overview: $"A {command.NumberOfDays}-day trip to {command.Destination}.",
+                Highlights:
+                [
+                    $"Explore {command.Destination} through {string.Join(", ", interests.DefaultIfEmpty(fallbackInterest))}.",
+                    "Balance planned activities with flexible discovery time.",
+                    "Use the daily themes to keep the itinerary focused."
+                ],
+                TravelTips:
+                [
+                    "Book popular restaurants and attractions in advance.",
+                    "Group nearby activities together to reduce transit time.",
+                    "Keep a small contingency budget for local transportation."
+                ]
+            )
         );
 
         return Task.FromResult(plan);

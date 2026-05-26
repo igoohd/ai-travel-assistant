@@ -45,7 +45,6 @@ public static class GenerateTripMapper
         return new GenerateTripResponse(
             Destination: tripPlan.Destination,
             NumberOfDays: tripPlan.NumberOfDays,
-            Overview: tripPlan.Overview,
             Days: days,
             Budget: new BudgetEstimateResponse(
                 Hotel: tripPlan.Budget.Hotel,
@@ -55,8 +54,10 @@ public static class GenerateTripMapper
                 Total: tripPlan.Budget.Total,
                 Category: tripPlan.Budget.Category,
                 Currency: tripPlan.Budget.Currency.Value),
-            Highlights: tripPlan.Highlights,
-            TravelTips: tripPlan.TravelTips,
+            Summary: new SummaryResponse(
+                Overview: tripPlan.Summary.Overview,
+                Highlights: tripPlan.Summary.Highlights,
+                TravelTips: tripPlan.Summary.TravelTips),
             ValidationIssues: result.ValidationIssues
                 .Select(issue => new ValidationIssueResponse(
                     Code: issue.Code,
