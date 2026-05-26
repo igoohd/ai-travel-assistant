@@ -78,13 +78,22 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 
         var jsonContent = ExtractJsonObject(aiContent);
 
-        var generatedPlan = JsonSerializer.Deserialize<GeneratedTripPlan>(
-            jsonContent,
-            new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            }
-        );
+        GeneratedTripPlan? generatedPlan;
+        try
+        {
+            generatedPlan = JsonSerializer.Deserialize<GeneratedTripPlan>(
+                jsonContent,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
+        catch (JsonException exception)
+        {
+            throw new InvalidOperationException(
+                "GitHub Models returned a response that could not be parsed as a trip plan JSON object.",
+                exception);
+        }
 
         if (generatedPlan is null)
         {
