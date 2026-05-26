@@ -1,10 +1,11 @@
+using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Application.Trips.Services;
 
 public sealed class TripPlanValidator : ITripPlanValidator
 {
-    public IReadOnlyList<ValidationIssue> Validate(Plan plan)
+    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
     {
         var issues = new List<ValidationIssue>();
 
@@ -27,6 +28,14 @@ public sealed class TripPlanValidator : ITripPlanValidator
             issues.Add(new ValidationIssue(
                 Code: ValidationIssueCodes.BudgetExceeded,
                 Message: "Estimated activity and restaurant costs exceed the planned experience budget.",
+                Severity: ValidationSeverity.Warning));
+        }
+
+        if (plan.Budget.Total > command.Budget)
+        {
+            issues.Add(new ValidationIssue(
+                Code: ValidationIssueCodes.BudgetExceeded,
+                Message: "Estimated trip cost exceeds the requested budget.",
                 Severity: ValidationSeverity.Warning));
         }
 

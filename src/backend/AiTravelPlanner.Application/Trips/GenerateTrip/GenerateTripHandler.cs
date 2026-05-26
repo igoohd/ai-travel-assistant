@@ -27,7 +27,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         }
 
         var plan = await _tripPlanGenerator.GenerateAsync(command);
-        var validationIssues = _tripPlanValidator.Validate(plan);
+        var validationIssues = _tripPlanValidator.Validate(plan, command);
 
         return GenerateTripResult.Success(plan, validationIssues);
     }

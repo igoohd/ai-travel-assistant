@@ -110,6 +110,19 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 
         var currency = new CurrencyCode(command.Currency);
 
+        var activityTotal = generatedPlan.Days
+            .SelectMany(day => day.Activities)
+            .Sum(activity => activity.EstimatedCost);
+
+        var foodTotal = generatedPlan.Days
+            .SelectMany(day => day.Restaurants)
+            .Sum(restaurant => restaurant.EstimatedCost);
+
+        var hotelTotal = Math.Round(command.Budget * 0.40m, 2);
+        var transportationTotal = Math.Round(command.Budget * 0.15m, 2);
+
+        var estimatedTotal = hotelTotal + transportationTotal + foodTotal + activityTotal;
+
         return new Plan(
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
@@ -135,13 +148,13 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                         .ToArray()))
                 .ToArray(),
             Budget: new BudgetEstimate(
-                Hotel: 0,
-                Transportation: 0,
-                Food: 0,
-                Activities: 0,
-                Total: command.Budget,
+                Hotel: hotelTotal,
+                Transportation: transportationTotal,
+                Food: foodTotal,
+                Activities: activityTotal,
+                Total: estimatedTotal,
                 Currency: currency,
-                Category: "unknown"),
+                Category: ClassifyBudget(estimatedTotal, command.NumberOfDays)),
             Highlights: generatedPlan.Highlights,
             TravelTips: generatedPlan.TravelTips);
     }
@@ -164,6 +177,18 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         }
 
         return trimmedContent;
+    }
+
+    private static string ClassifyBudget(decimal total, int numberOfDays)
+    {
+        var dailyBudget = total / numberOfDays;
+
+        return dailyBudget switch
+        {
+            < 100 => "budget",
+            < 300 => "mid-range",
+            _ => "luxury"
+        };
     }
 
 }
