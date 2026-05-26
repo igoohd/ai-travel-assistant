@@ -41,6 +41,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         - Return only valid JSON.
         - Do not wrap the JSON in Markdown.
         - Do not include explanations outside the JSON.
+        - Each activity must include durationHours as a number between 0.5 and 4.
 
         Additional instruction:
         - {{additionalInstructionText}}
@@ -59,7 +60,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                             "timeOfDay": "Morning",
                             "title": "string",
                             "description": "string",
-                            "estimatedCost": 50
+                            "estimatedCost": 50,
+                            "durationHours": 2
                         }
                     ],
                     "restaurants": [
@@ -67,7 +69,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                             "name": "string",
                             "cuisine": "string",
                             "notes": "string",
-                            "estimatedCost": 40
+                            "estimatedCost": 40,
                         }
                     ]
                 }
@@ -145,7 +147,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                             TimeOfDay: activity.TimeOfDay,
                             Title: activity.Title,
                             Description: activity.Description,
-                            EstimatedCost: activity.EstimatedCost))
+                            EstimatedCost: activity.EstimatedCost,
+                            DurationHours: activity.DurationHours))
                         .ToArray(),
                     Restaurants: day.Restaurants
                         .Select(restaurant => new RestaurantSuggestion(

@@ -17,7 +17,8 @@ public sealed record GeneratedActivity(
     string TimeOfDay,
     string Title,
     string Description,
-    decimal EstimatedCost);
+    decimal EstimatedCost,
+    decimal DurationHours);
 
 public sealed record GeneratedRestaurant(
     string Name,

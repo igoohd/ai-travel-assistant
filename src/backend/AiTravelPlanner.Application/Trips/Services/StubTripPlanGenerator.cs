@@ -35,17 +35,20 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
                             TimeOfDay: "Morning",
                             Title: $"{command.Destination} orientation walk",
                             Description: "Start with a relaxed walk through a central neighborhood.",
-                            EstimatedCost: activityCost),
+                            EstimatedCost: activityCost,
+                            DurationHours: 2),
                         new Activity(
                             TimeOfDay: "Afternoon",
                             Title: $"{theme} experience",
                             Description: $"Explore a recommended place or activity connected to {theme}.",
-                            EstimatedCost: activityCost),
+                            EstimatedCost: activityCost,
+                            DurationHours: 3),
                         new Activity(
                             TimeOfDay: "Evening",
                             Title: "Local dinner area",
                             Description: "End the day near a lively food or entertainment district.",
-                            EstimatedCost: activityCost)
+                            EstimatedCost: activityCost,
+                            DurationHours: 2)
                     ],
                     Restaurants:
                     [

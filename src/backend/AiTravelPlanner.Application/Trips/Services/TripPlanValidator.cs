@@ -39,6 +39,14 @@ public sealed class TripPlanValidator : ITripPlanValidator
                 Severity: ValidationSeverity.Warning));
         }
 
+        if (plan.Days.Any(day => day.Activities.Sum(activity => activity.DurationHours) > 10))
+        {
+            issues.Add(new ValidationIssue(
+                Code: ValidationIssueCodes.UnrealisticSchedule,
+                Message: "One or more days has more than 10 hours of planned activities.",
+                Severity: ValidationSeverity.Warning));
+        }
+
         return issues;
     }
 }

@@ -29,7 +29,8 @@ public static class GenerateTripMapper
                         TimeOfDay: activity.TimeOfDay,
                         Title: activity.Title,
                         Description: activity.Description,
-                        EstimatedCost: activity.EstimatedCost))
+                        EstimatedCost: activity.EstimatedCost,
+                        DurationHours: activity.DurationHours))
                     .ToArray(),
                 Restaurants: day.Restaurants
                     .Select(restaurant => new RestaurantSuggestionResponse(

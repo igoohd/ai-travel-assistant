@@ -4,4 +4,5 @@ public sealed record ActivityResponse(
     string TimeOfDay,
     string Title,
     string Description,
-    decimal EstimatedCost);
+    decimal EstimatedCost,
+    decimal DurationHours);
