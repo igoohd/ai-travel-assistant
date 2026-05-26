@@ -17,7 +17,10 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         _logger = logger;
     }
 
-    public async Task<Plan> GenerateAsync(GenerateTripCommand command, string? additionalInstruction = null)
+    public async Task<Plan> GenerateAsync(
+        GenerateTripCommand command,
+        CancellationToken cancellationToken,
+        string? additionalInstruction = null)
     {
         var additionalInstructionText = string.IsNullOrWhiteSpace(additionalInstruction)
             ? "No additional instruction."
@@ -89,7 +92,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                 new GitHubModelsMessage(
                     Role: "user",
                     Content: prompt)
-            ]);
+            ],
+            cancellationToken);
 
         var jsonContent = ExtractJsonObject(aiContent);
 

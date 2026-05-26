@@ -2,6 +2,7 @@ using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
+using AiTravelPlanner.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ builder.Services
     .Validate(options => options.MaxTokens > 0, "GitHub Models max tokens must be greater than zero.")
     .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "GitHub Models temperature must be between 0 and 1.");
 builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
+
+builder.Services.AddScoped<ITripPlanRepository, NoOpTripPlanRepository>();
 
 var app = builder.Build();
 

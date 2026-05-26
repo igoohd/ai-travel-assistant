@@ -3,10 +3,11 @@ using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Application.Trips.Services;
 
-public interface ITripPlanGenerator
+public interface ITripPlanRepository
 {
-    Task<Plan> GenerateAsync(
+    Task SaveAsync(
+        Plan plan,
         GenerateTripCommand command,
-        CancellationToken cancellationToken,
-        string? additionalInstruction = null);
+        IReadOnlyList<ValidationIssue> validationIssues,
+        CancellationToken cancellationToken);
 }

@@ -9,18 +9,21 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
     private readonly ITripPlanGenerator _tripPlanGenerator;
     private readonly ITripPlanValidator _tripPlanValidator;
     private readonly ILogger<GenerateTripHandler> _logger;
+    private readonly ITripPlanRepository _tripPlanRepository;
 
     public GenerateTripHandler(
         ITripPlanGenerator tripPlanGenerator,
         ITripPlanValidator tripPlanValidator,
+        ITripPlanRepository tripPlanRepository,
         ILogger<GenerateTripHandler> logger)
     {
         _tripPlanGenerator = tripPlanGenerator;
         _tripPlanValidator = tripPlanValidator;
+        _tripPlanRepository = tripPlanRepository;
         _logger = logger;
     }
 
-    public async Task<GenerateTripResult> HandleAsync(GenerateTripCommand command)
+    public async Task<GenerateTripResult> HandleAsync(GenerateTripCommand command, CancellationToken cancellationToken = default)
     {
         var startedAt = DateTimeOffset.UtcNow;
         var retryCount = 0;
@@ -39,18 +42,27 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        var plan = await _tripPlanGenerator.GenerateAsync(command);
+        var plan = await _tripPlanGenerator.GenerateAsync(
+            command,
+            cancellationToken: cancellationToken);
         var validationIssues = _tripPlanValidator.Validate(plan, command);
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
             plan = await _tripPlanGenerator.GenerateAsync(
                 command,
+                cancellationToken,
                 "The previous plan exceeded the budget. Generate a cheaper version with lower activity and restaurant costs.");
 
             retryCount++;
             validationIssues = _tripPlanValidator.Validate(plan, command);
         }
+
+        await _tripPlanRepository.SaveAsync(
+            plan,
+            command,
+            validationIssues,
+            cancellationToken);
 
         _logger.LogInformation(
             "Generate trip completed. Destination: {Destination}. Days: {NumberOfDays}. Success: {Success}. RetryCount: {RetryCount}. DurationMs: {DurationMs}.",
