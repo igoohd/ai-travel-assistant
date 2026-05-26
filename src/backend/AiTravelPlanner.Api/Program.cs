@@ -1,5 +1,6 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.Services;
+using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-//builder.Services.AddScoped<ITripPlanGenerator, StubTripPlanGenerator>();
-builder.Services.AddScoped<ITripPlanGenerator, GitHubModelsTripPlanGenerator>();
+var aiProviderOptions = builder.Configuration
+    .GetSection(AiProviderOptions.SectionName)
+    .Get<AiProviderOptions>() ?? new AiProviderOptions();
+
+if (aiProviderOptions.ActiveProvider.Equals("GitHubModels", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddScoped<ITripPlanGenerator, GitHubModelsTripPlanGenerator>();
+}
+else
+{
+    builder.Services.AddScoped<ITripPlanGenerator, StubTripPlanGenerator>();
+}
+
 builder.Services.AddScoped<ITripPlanValidator, TripPlanValidator>();
 builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
 
