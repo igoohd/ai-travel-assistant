@@ -4,7 +4,10 @@ namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
 public sealed record GitHubModelsChatCompletionResponse(
     [property: JsonPropertyName("choices")]
-    IReadOnlyList<GitHubModelsChoice> Choices);
+    IReadOnlyList<GitHubModelsChoice> Choices,
+
+    [property: JsonPropertyName("usage")]
+    GitHubModelsUsage? Usage);
 
 public sealed record GitHubModelsChoice(
     [property: JsonPropertyName("message")]
@@ -13,3 +16,13 @@ public sealed record GitHubModelsChoice(
 public sealed record GitHubModelsResponseMessage(
     [property: JsonPropertyName("content")]
 string Content);
+
+public sealed record GitHubModelsUsage(
+    [property: JsonPropertyName("prompt_tokens")]
+    int PromptTokens,
+
+    [property: JsonPropertyName("completion_tokens")]
+    int CompletionTokens,
+
+    [property: JsonPropertyName("total_tokens")]
+    int TotalTokens);

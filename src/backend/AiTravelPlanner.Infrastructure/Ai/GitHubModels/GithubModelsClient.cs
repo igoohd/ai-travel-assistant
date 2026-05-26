@@ -69,6 +69,15 @@ public sealed class GitHubModelsClient : IGitHubModelsClient
         var completion = await response.Content
             .ReadFromJsonAsync<GitHubModelsChatCompletionResponse>(cancellationToken);
 
+        if (completion?.Usage is not null)
+        {
+            _logger.LogInformation(
+                "GitHub Models token usage. PromptTokens: {PromptTokens}. CompletionTokens: {CompletionTokens}. TotalTokens: {TotalTokens}.",
+                completion.Usage.PromptTokens,
+                completion.Usage.CompletionTokens,
+                completion.Usage.TotalTokens);
+        }
+
         return completion?.Choices.FirstOrDefault()?.Message.Content
             ?? throw new InvalidOperationException("GitHub Models returned an empty response.");
     }
