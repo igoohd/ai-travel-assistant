@@ -46,7 +46,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
             ""travelTips"": [""string""]
         }";
 
-        var content = await _client.CompleteChatAsync(
+        var aiContent = await _client.CompleteChatAsync(
             [
                 new GitHubModelsMessage(
                     Role: "system",
@@ -56,8 +56,10 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                     Content: prompt)
             ]);
 
+        var jsonContent = ExtractJsonObject(aiContent);
+
         var generatedPlan = JsonSerializer.Deserialize<GeneratedTripPlan>(
-            content,
+            jsonContent,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -106,4 +108,25 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
             Highlights: generatedPlan.Highlights,
             TravelTips: generatedPlan.TravelTips);
     }
+
+    private static string ExtractJsonObject(string content)
+    {
+        var trimmedContent = content.Trim();
+
+        if (trimmedContent.StartsWith("```"))
+        {
+            var firstNewLineIndex = trimmedContent.IndexOf('\n');
+            var lastFenceIndex = trimmedContent.LastIndexOf("```", StringComparison.Ordinal);
+
+            if (firstNewLineIndex >= 0 && lastFenceIndex > firstNewLineIndex)
+            {
+                trimmedContent = trimmedContent[
+                    (firstNewLineIndex + 1)..lastFenceIndex
+                ].Trim();
+            }
+        }
+
+        return trimmedContent;
+    }
+
 }
