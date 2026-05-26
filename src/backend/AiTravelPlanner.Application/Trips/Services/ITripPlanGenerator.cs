@@ -5,5 +5,5 @@ namespace AiTravelPlanner.Application.Trips.Services;
 
 public interface ITripPlanGenerator
 {
-    Task<Plan> GenerateAsync(GenerateTripCommand command);
+    Task<Plan> GenerateAsync(GenerateTripCommand command, string? additionalInstruction = null);
 }

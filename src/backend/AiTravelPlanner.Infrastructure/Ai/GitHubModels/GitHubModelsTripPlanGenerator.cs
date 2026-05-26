@@ -17,8 +17,12 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         _logger = logger;
     }
 
-    public async Task<Plan> GenerateAsync(GenerateTripCommand command)
+    public async Task<Plan> GenerateAsync(GenerateTripCommand command, string? additionalInstruction = null)
     {
+        var additionalInstructionText = string.IsNullOrWhiteSpace(additionalInstruction)
+            ? "No additional instruction."
+            : additionalInstruction;
+
         var prompt = $$"""
         Create a personalized travel itinerary.
 
@@ -37,6 +41,10 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         - Return only valid JSON.
         - Do not wrap the JSON in Markdown.
         - Do not include explanations outside the JSON.
+
+        Additional instruction:
+        - {{additionalInstructionText}}
+
 
         JSON shape:
         {

@@ -5,7 +5,7 @@ namespace AiTravelPlanner.Application.Trips.Services;
 
 public sealed class StubTripPlanGenerator : ITripPlanGenerator
 {
-    public Task<Plan> GenerateAsync(GenerateTripCommand command)
+    public Task<Plan> GenerateAsync(GenerateTripCommand command, string? additionalInstruction = null)
     {
         var interests = command.Interests
             .Where(interest => !string.IsNullOrWhiteSpace(interest))
