@@ -73,6 +73,6 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             retryCount,
             (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
 
-        return GenerateTripResult.Success(plan, validationIssues);
+        return GenerateTripResult.Success(plan, validationIssues, retryCount);
     }
 }

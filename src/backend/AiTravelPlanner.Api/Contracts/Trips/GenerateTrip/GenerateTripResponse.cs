@@ -8,4 +8,5 @@ public sealed record GenerateTripResponse(
     BudgetEstimateResponse Budget,
     SummaryResponse Summary,
     IReadOnlyCollection<ValidationIssueResponse> ValidationIssues,
-    AiGenerationResponse AiMetadata);
+    AiGenerationResponse AiMetadata,
+    GenerationDiagnosticsResponse Diagnostics);

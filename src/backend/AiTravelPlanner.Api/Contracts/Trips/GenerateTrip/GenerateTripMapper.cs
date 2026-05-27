@@ -71,7 +71,9 @@ public static class GenerateTripMapper
                 Model: tripPlan.AiMetadata.Model,
                 PromptTokens: tripPlan.AiMetadata.PromptTokens,
                 CompletionTokens: tripPlan.AiMetadata.CompletionTokens,
-                TotalTokens: tripPlan.AiMetadata.TotalTokens)
+                TotalTokens: tripPlan.AiMetadata.TotalTokens),
+            Diagnostics: new GenerationDiagnosticsResponse(
+                RetryCount: result.RetryCount)
         );
     }
 
@@ -80,6 +82,7 @@ public static class GenerateTripMapper
         return new GenerateTripResult(
             Plan: tripPlan,
             ValidationIssues: [],
+            RetryCount: 0,
             Errors: [])
             .ToResponse();
     }
