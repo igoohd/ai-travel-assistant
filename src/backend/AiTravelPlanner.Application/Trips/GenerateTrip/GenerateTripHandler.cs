@@ -45,7 +45,8 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         var plan = await _tripPlanGenerator.GenerateAsync(
             command,
             cancellationToken: cancellationToken);
-        var validationIssues = _tripPlanValidator.Validate(plan, command);
+
+        var validationIssues = _tripPlanValidator.Validate(plan);
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
@@ -55,7 +56,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                 "The previous plan exceeded the budget. Generate a cheaper version with lower activity and restaurant costs.");
 
             retryCount++;
-            validationIssues = _tripPlanValidator.Validate(plan, command);
+            validationIssues = _tripPlanValidator.Validate(plan);
         }
 
         await _tripPlanRepository.SaveAsync(

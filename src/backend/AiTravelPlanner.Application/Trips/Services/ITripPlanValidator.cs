@@ -5,5 +5,5 @@ namespace AiTravelPlanner.Application.Trips.Services;
 
 public interface ITripPlanValidator
 {
-    IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command);
+    IReadOnlyList<ValidationIssue> Validate(Plan plan);
 }
