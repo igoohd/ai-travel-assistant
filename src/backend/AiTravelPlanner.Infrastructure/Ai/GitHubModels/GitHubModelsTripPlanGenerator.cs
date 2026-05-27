@@ -3,6 +3,7 @@ using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Domain.Trips;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
@@ -12,11 +13,14 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
     private readonly GitHubModelsOptions _options;
     private readonly ILogger<GitHubModelsTripPlanGenerator> _logger;
 
-    public GitHubModelsTripPlanGenerator(IGitHubModelsClient client, ILogger<GitHubModelsTripPlanGenerator> logger, GitHubModelsOptions options)
+    public GitHubModelsTripPlanGenerator(
+        IGitHubModelsClient client,
+        ILogger<GitHubModelsTripPlanGenerator> logger,
+        IOptions<GitHubModelsOptions> options)
     {
         _client = client;
         _logger = logger;
-        _options = options;
+        _options = options.Value;
     }
 
     public async Task<Plan> GenerateAsync(
