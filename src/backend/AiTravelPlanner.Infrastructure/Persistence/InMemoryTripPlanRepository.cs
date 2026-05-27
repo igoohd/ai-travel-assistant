@@ -24,4 +24,12 @@ public sealed class InMemoryTripPlanRepository : ITripPlanRepository
         return Task.FromResult(plan);
     }
 
+    public Task<IReadOnlyList<Plan>> ListAsync(CancellationToken cancellationToken)
+    {
+        IReadOnlyList<Plan> plans = Plans.Values
+            .OrderByDescending(p => p.CreatedAt)
+            .ToArray();
+
+        return Task.FromResult(plans);
+    }
 }

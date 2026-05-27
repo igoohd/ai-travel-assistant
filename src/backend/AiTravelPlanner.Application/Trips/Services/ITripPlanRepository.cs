@@ -12,4 +12,6 @@ public interface ITripPlanRepository
         CancellationToken cancellationToken);
 
     Task<Plan?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<Plan>> ListAsync(CancellationToken cancellationToken);
 }

@@ -141,6 +141,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 
         return new Plan(
             Id: Guid.NewGuid(),
+            CreatedAt: DateTimeOffset.UtcNow,
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: generatedPlan.Days

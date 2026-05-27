@@ -6,5 +6,6 @@ public sealed record Plan(
     int NumberOfDays,
     IReadOnlyList<Day> Days,
     BudgetEstimate Budget,
-    Summary Summary
+    Summary Summary,
+    DateTimeOffset CreatedAt
 );

@@ -79,6 +79,7 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
 
         var plan = new Plan(
             Id: Guid.NewGuid(),
+            CreatedAt: DateTimeOffset.UtcNow,
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: days,
