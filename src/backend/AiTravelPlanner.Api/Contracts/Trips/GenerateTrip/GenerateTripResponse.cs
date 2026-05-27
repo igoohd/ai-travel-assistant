@@ -7,4 +7,5 @@ public sealed record GenerateTripResponse(
     IReadOnlyCollection<DayResponse> Days,
     BudgetEstimateResponse Budget,
     SummaryResponse Summary,
-    IReadOnlyCollection<ValidationIssueResponse> ValidationIssues);
+    IReadOnlyCollection<ValidationIssueResponse> ValidationIssues,
+    AiGenerationResponse AiMetadata);

@@ -7,4 +7,5 @@ public sealed record TripListItemResponse(
     int NumberOfDays,
     decimal EstimatedTotal,
     string Currency,
-    string BudgetCategory);
+    string BudgetCategory,
+    AiGenerationResponse AiMetadata);

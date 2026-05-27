@@ -9,12 +9,14 @@ namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
 {
     private readonly IGitHubModelsClient _client;
+    private readonly GitHubModelsOptions _options;
     private readonly ILogger<GitHubModelsTripPlanGenerator> _logger;
 
-    public GitHubModelsTripPlanGenerator(IGitHubModelsClient client, ILogger<GitHubModelsTripPlanGenerator> logger)
+    public GitHubModelsTripPlanGenerator(IGitHubModelsClient client, ILogger<GitHubModelsTripPlanGenerator> logger, GitHubModelsOptions options)
     {
         _client = client;
         _logger = logger;
+        _options = options;
     }
 
     public async Task<Plan> GenerateAsync(
@@ -142,6 +144,9 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         return new Plan(
             Id: Guid.NewGuid(),
             CreatedAt: DateTimeOffset.UtcNow,
+            AiMetadata: new AiGenerationMetadata(
+                Provider: "GitHubModels",
+                Model: _options.Model),
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: generatedPlan.Days

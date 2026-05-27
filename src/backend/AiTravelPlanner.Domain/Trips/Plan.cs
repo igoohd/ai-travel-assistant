@@ -7,5 +7,6 @@ public sealed record Plan(
     IReadOnlyList<Day> Days,
     BudgetEstimate Budget,
     Summary Summary,
-    DateTimeOffset CreatedAt
+    DateTimeOffset CreatedAt,
+    AiGenerationMetadata AiMetadata
 );
