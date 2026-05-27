@@ -1,7 +1,8 @@
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
+using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.GetTrip;
-using AiTravelPlanner.Application.Trips.Services;
+using AiTravelPlanner.Application.Trips.ListTrips;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AiTravelPlanner.Api.Controllers;
@@ -12,10 +13,12 @@ public sealed class TripsController : ControllerBase
 {
     private readonly IGenerateTripUseCase _generateTripUseCase;
     private readonly IGetTripUseCase _getTripUseCase;
-    public TripsController(IGenerateTripUseCase generateTripUseCase, IGetTripUseCase getTripUseCase)
+    private readonly IListTripUseCase _listTripUseCase;
+    public TripsController(IGenerateTripUseCase generateTripUseCase, IGetTripUseCase getTripUseCase, IListTripUseCase listTripUseCase)
     {
         _generateTripUseCase = generateTripUseCase;
         _getTripUseCase = getTripUseCase;
+        _listTripUseCase = listTripUseCase;
     }
 
     [HttpPost("generate")]
@@ -53,5 +56,20 @@ public sealed class TripsController : ControllerBase
         }
 
         return Ok(result.Plan!.ToResponse());
+    }
+
+    [HttpGet("trips")]
+    [ProducesResponseType<ListTripsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ListTripsResponse>> List(CancellationToken cancellationToken)
+    {
+        var result = await _listTripUseCase.HandleAsync(new ListTripsQuery(), cancellationToken);
+
+        if (!result.IsFound)
+        {
+            return NotFound();
+        }
+
+        return Ok(result.ToResponse());
     }
 }

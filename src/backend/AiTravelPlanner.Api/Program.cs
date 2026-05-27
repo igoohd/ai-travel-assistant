@@ -1,5 +1,6 @@
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.GetTrip;
+using AiTravelPlanner.Application.Trips.ListTrips;
 using AiTravelPlanner.Application.Trips.Services;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
@@ -26,6 +27,7 @@ else
 builder.Services.AddScoped<ITripPlanValidator, TripPlanValidator>();
 builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
 builder.Services.AddScoped<IGetTripUseCase, GetTripHandler>();
+builder.Services.AddScoped<IListTripUseCase, ListTripsHandler>();
 
 builder.Services
     .AddOptions<GitHubModelsOptions>()
