@@ -1,4 +1,5 @@
 @host = http://localhost:5122
+@tripId = 442c6348-4490-43e8-9827-17a57a37de44
 
 ### Generate trip
 
@@ -16,6 +17,21 @@ Content-Type: application/json
     "technology"
   ]
 }
+
+### Get trip by id
+
+GET {{host}}/api/trips/{{tripId}}
+Accept: application/json
+
+### List trips
+
+GET {{host}}/api/trips/trips
+Accept: application/json
+
+### Validate trip
+
+POST {{host}}/api/trips/{{tripId}}/validate
+Accept: application/json
 
 ### Generate trip - invalid request
 
