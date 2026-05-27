@@ -1,3 +1,4 @@
+using AiTravelPlanner.Api.Contracts.Trips;
 using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 
 namespace AiTravelPlanner.Application.Trips.ListTrips;
@@ -14,7 +15,14 @@ public static class ListTripsMapper
                 NumberOfDays: plan.NumberOfDays,
                 EstimatedTotal: plan.Budget.Total,
                 Currency: plan.Budget.Currency.Value,
-                BudgetCategory: plan.Budget.Category))
+                BudgetCategory: plan.Budget.Category,
+                AiMetadata: new AiGenerationResponse(
+                Provider: plan.AiMetadata.Provider,
+                Model: plan.AiMetadata.Model,
+                PromptTokens: plan.AiMetadata.PromptTokens,
+                CompletionTokens: plan.AiMetadata.CompletionTokens,
+                TotalTokens: plan.AiMetadata.TotalTokens)
+                ))
             .ToArray();
 
         return new ListTripsResponse(trips);

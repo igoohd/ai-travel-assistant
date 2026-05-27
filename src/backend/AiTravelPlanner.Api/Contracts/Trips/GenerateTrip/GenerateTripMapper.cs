@@ -65,7 +65,14 @@ public static class GenerateTripMapper
                     Code: issue.Code,
                     Message: issue.Message,
                     Severity: issue.Severity.ToString()))
-                .ToArray());
+                .ToArray(),
+            AiMetadata: new AiGenerationResponse(
+                Provider: tripPlan.AiMetadata.Provider,
+                Model: tripPlan.AiMetadata.Model,
+                PromptTokens: tripPlan.AiMetadata.PromptTokens,
+                CompletionTokens: tripPlan.AiMetadata.CompletionTokens,
+                TotalTokens: tripPlan.AiMetadata.TotalTokens)
+        );
     }
 
     public static GenerateTripResponse ToResponse(this Plan tripPlan)
