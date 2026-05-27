@@ -40,14 +40,14 @@ public sealed class TripsController : ControllerBase
     [HttpGet("{id:guid}")]
     [ProducesResponseType<GenerateTripResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GenerateTripResponse>> GetTripById(Guid id, [FromServices] ITripPlanRepository tripPlanRepository, CancellationToken cancellationToken)
+    public async Task<ActionResult<GenerateTripResponse>> GetTripById(Guid id, CancellationToken cancellationToken)
     {
 
         var result = await _getTripUseCase.HandleAsync(
                 new GetTripQuery(id),
                 cancellationToken);
 
-        if (result is null)
+        if (!result.IsFound)
         {
             return NotFound();
         }
