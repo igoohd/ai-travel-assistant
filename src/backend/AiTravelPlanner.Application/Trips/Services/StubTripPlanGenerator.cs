@@ -82,7 +82,10 @@ public sealed class StubTripPlanGenerator : ITripPlanGenerator
             CreatedAt: DateTimeOffset.UtcNow,
             AiMetadata: new AiGenerationMetadata(
                 Provider: "StubProvider",
-                Model: "StubModel"),
+                Model: "StubModel",
+                PromptTokens: null,
+                CompletionTokens: null,
+                TotalTokens: null),
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: days,

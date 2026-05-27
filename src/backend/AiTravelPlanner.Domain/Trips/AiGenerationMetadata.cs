@@ -1,4 +1,7 @@
 public sealed record AiGenerationMetadata(
     string Provider,
-    string Model
-)
+    string Model,
+    int? PromptTokens,
+    int? CompletionTokens,
+    int? TotalTokens
+);

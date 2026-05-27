@@ -2,7 +2,7 @@ namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 
 public interface IGitHubModelsClient
 {
-    Task<string> CompleteChatAsync(
+    Task<GitHubModelsCompletion> CompleteChatAsync(
         IReadOnlyList<GitHubModelsMessage> messages,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken);
 }

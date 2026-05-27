@@ -21,7 +21,7 @@ public sealed class GitHubModelsClient : IGitHubModelsClient
         _logger = logger;
     }
 
-    public async Task<string> CompleteChatAsync(
+    public async Task<GitHubModelsCompletion> CompleteChatAsync(
         IReadOnlyList<GitHubModelsMessage> messages,
         CancellationToken cancellationToken = default)
     {
@@ -78,7 +78,9 @@ public sealed class GitHubModelsClient : IGitHubModelsClient
                 completion.Usage.TotalTokens);
         }
 
-        return completion?.Choices.FirstOrDefault()?.Message.Content
-            ?? throw new InvalidOperationException("GitHub Models returned an empty response.");
+        return new GitHubModelsCompletion(
+            Content: completion?.Choices.FirstOrDefault()?.Message.Content
+                ?? throw new InvalidOperationException("GitHub Models returned an empty response."),
+            Usage: completion.Usage);
     }
 }

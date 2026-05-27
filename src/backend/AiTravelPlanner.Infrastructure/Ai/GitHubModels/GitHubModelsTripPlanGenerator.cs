@@ -86,7 +86,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         }
         """;
 
-        var aiContent = await _client.CompleteChatAsync(
+        var completion = await _client.CompleteChatAsync(
             [
                 new GitHubModelsMessage(
                     Role: "system",
@@ -97,7 +97,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
             ],
             cancellationToken);
 
-        var jsonContent = ExtractJsonObject(aiContent);
+        var jsonContent = ExtractJsonObject(completion.Content);
 
         GeneratedTripPlan? generatedPlan;
         try
@@ -146,7 +146,11 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
             CreatedAt: DateTimeOffset.UtcNow,
             AiMetadata: new AiGenerationMetadata(
                 Provider: "GitHubModels",
-                Model: _options.Model),
+                Model: _options.Model,
+                PromptTokens: completion.Usage?.PromptTokens,
+                CompletionTokens: completion.Usage?.CompletionTokens,
+                TotalTokens: completion.Usage?.TotalTokens
+                ),
             Destination: command.Destination,
             NumberOfDays: command.NumberOfDays,
             Days: generatedPlan.Days
