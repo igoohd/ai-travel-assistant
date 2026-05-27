@@ -26,6 +26,7 @@ else
 
 builder.Services.AddScoped<ITripPlanValidator, TripPlanValidator>();
 builder.Services.AddScoped<IGenerateTripUseCase, GenerateTripHandler>();
+builder.Services.AddScoped<IValidateTripUseCase, ValidateTripHandler>();
 builder.Services.AddScoped<IGetTripUseCase, GetTripHandler>();
 builder.Services.AddScoped<IListTripUseCase, ListTripsHandler>();
 

@@ -1,8 +1,10 @@
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
+using AiTravelPlanner.Api.Contracts.Trips.ValidateTrip;
 using AiTravelPlanner.Application.Trips.GenerateTrip;
 using AiTravelPlanner.Application.Trips.GetTrip;
 using AiTravelPlanner.Application.Trips.ListTrips;
+using AiTravelPlanner.Application.Trips.ValidateTrip;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AiTravelPlanner.Api.Controllers;
@@ -14,11 +16,13 @@ public sealed class TripsController : ControllerBase
     private readonly IGenerateTripUseCase _generateTripUseCase;
     private readonly IGetTripUseCase _getTripUseCase;
     private readonly IListTripUseCase _listTripUseCase;
-    public TripsController(IGenerateTripUseCase generateTripUseCase, IGetTripUseCase getTripUseCase, IListTripUseCase listTripUseCase)
+    private readonly IValidateTripUseCase _validateTripUseCase;
+    public TripsController(IGenerateTripUseCase generateTripUseCase, IGetTripUseCase getTripUseCase, IListTripUseCase listTripUseCase, IValidateTripUseCase validateTripUseCase)
     {
         _generateTripUseCase = generateTripUseCase;
         _getTripUseCase = getTripUseCase;
         _listTripUseCase = listTripUseCase;
+        _validateTripUseCase = validateTripUseCase;
     }
 
     [HttpPost("generate")]
@@ -68,6 +72,21 @@ public sealed class TripsController : ControllerBase
         if (!result.IsFound)
         {
             return NotFound();
+        }
+
+        return Ok(result.ToResponse());
+    }
+
+    [HttpPost("{id:guid}/validate")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> ValidateTrip(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _validateTripUseCase.HandleAsync(new ValidateTripCommand(id), cancellationToken);
+
+        if (!result.IsSuccessful)
+        {
+            return NotFound(result.Errors);
         }
 
         return Ok(result.ToResponse());
