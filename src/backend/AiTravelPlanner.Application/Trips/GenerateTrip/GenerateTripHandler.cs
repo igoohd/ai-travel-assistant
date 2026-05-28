@@ -42,6 +42,34 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
+        if (command.Interests.Count == 0)
+        {
+            _logger.LogWarning(
+                "Generate trip rejected. Destination: {Destination}. Days: {NumberOfDays}. Reason: {Reason}.",
+                command.Destination,
+                command.NumberOfDays,
+                "At least one interest must be provided.");
+
+            return GenerateTripResult.Failure(
+            [
+                "At least one interest must be provided."
+            ]);
+        }
+
+        if (command.Interests.Any(interest => interest.Length > 50))
+        {
+            _logger.LogWarning(
+                "Generate trip rejected. Destination: {Destination}. Days: {NumberOfDays}. Reason: {Reason}.",
+                command.Destination,
+                command.NumberOfDays,
+                "Each interest must be 50 characters or fewer.");
+
+            return GenerateTripResult.Failure(
+            [
+                "Each interest must be 50 characters or fewer."
+            ]);
+        }
+
         var plan = await _tripPlanGenerator.GenerateAsync(
             command,
             cancellationToken: cancellationToken);

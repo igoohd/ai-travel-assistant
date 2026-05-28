@@ -15,6 +15,7 @@ public sealed record GenerateTripRequest(
 
     [Required]
     [MinLength(1)]
+    [MaxLength(10)]
     IReadOnlyCollection<string> Interests,
 
     [Required]

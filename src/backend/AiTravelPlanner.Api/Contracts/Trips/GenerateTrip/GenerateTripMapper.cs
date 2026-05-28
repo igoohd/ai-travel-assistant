@@ -12,7 +12,10 @@ public static class GenerateTripMapper
             NumberOfDays: request.NumberOfDays,
             Budget: request.Budget,
             Currency: request.Currency,
-            Interests: request.Interests);
+            Interests: request.Interests
+                .Where(interest => !string.IsNullOrWhiteSpace(interest))
+                .Select(interest => interest.Trim())
+                .ToArray());
     }
 
     public static GenerateTripResponse ToResponse(this GenerateTripResult result)
