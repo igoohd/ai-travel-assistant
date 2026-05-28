@@ -40,6 +40,7 @@ builder.Services
 builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
 
 builder.Services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
+builder.Services.AddSingleton<ITripInputSanitizer, TripInputSanitizer>();
 
 var app = builder.Build();
 

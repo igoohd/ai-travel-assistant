@@ -8,18 +8,22 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
 {
     private readonly ITripPlanGenerator _tripPlanGenerator;
     private readonly ITripPlanValidator _tripPlanValidator;
-    private readonly ILogger<GenerateTripHandler> _logger;
     private readonly ITripPlanRepository _tripPlanRepository;
+    private readonly ITripInputSanitizer _tripInputSanitizer;
+    private readonly ILogger<GenerateTripHandler> _logger;
 
     public GenerateTripHandler(
         ITripPlanGenerator tripPlanGenerator,
         ITripPlanValidator tripPlanValidator,
         ITripPlanRepository tripPlanRepository,
-        ILogger<GenerateTripHandler> logger)
+        ITripInputSanitizer tripInputSanitizer,
+        ILogger<GenerateTripHandler> logger
+        )
     {
         _tripPlanGenerator = tripPlanGenerator;
         _tripPlanValidator = tripPlanValidator;
         _tripPlanRepository = tripPlanRepository;
+        _tripInputSanitizer = tripInputSanitizer;
         _logger = logger;
     }
 
@@ -27,6 +31,16 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
     {
         var startedAt = DateTimeOffset.UtcNow;
         var retryCount = 0;
+
+        var sanitizedCommand = command with
+        {
+            Destination = _tripInputSanitizer.SanitizeInput(command.Destination),
+            Currency = command.Currency.Trim().ToUpperInvariant(),
+            Interests = command.Interests
+                .Select(_tripInputSanitizer.SanitizeInput)
+                .Where(interest => !string.IsNullOrWhiteSpace(interest))
+                .ToArray()
+        };
 
         if (command.NumberOfDays <= 0)
         {
