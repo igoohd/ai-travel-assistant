@@ -16,13 +16,18 @@ public sealed class TripsController : ControllerBase
 {
     private readonly IGenerateTripUseCase _generateTripUseCase;
     private readonly IGetTripUseCase _getTripUseCase;
-    private readonly IListTripUseCase _listTripUseCase;
+    private readonly IListTripsUseCase _listTripsUseCase;
     private readonly IValidateTripUseCase _validateTripUseCase;
-    public TripsController(IGenerateTripUseCase generateTripUseCase, IGetTripUseCase getTripUseCase, IListTripUseCase listTripUseCase, IValidateTripUseCase validateTripUseCase)
+
+    public TripsController(
+        IGenerateTripUseCase generateTripUseCase,
+        IGetTripUseCase getTripUseCase,
+        IListTripsUseCase listTripsUseCase,
+        IValidateTripUseCase validateTripUseCase)
     {
         _generateTripUseCase = generateTripUseCase;
         _getTripUseCase = getTripUseCase;
-        _listTripUseCase = listTripUseCase;
+        _listTripsUseCase = listTripsUseCase;
         _validateTripUseCase = validateTripUseCase;
     }
 
@@ -50,10 +55,9 @@ public sealed class TripsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GenerateTripResponse>> GetTripById(Guid id, CancellationToken cancellationToken)
     {
-
         var result = await _getTripUseCase.HandleAsync(
-                new GetTripQuery(id),
-                cancellationToken);
+            new GetTripQuery(id),
+            cancellationToken);
 
         if (!result.IsFound)
         {
@@ -66,17 +70,11 @@ public sealed class TripsController : ControllerBase
         return Ok(result.Plan!.ToResponse());
     }
 
-    [HttpGet("trips")]
+    [HttpGet]
     [ProducesResponseType<ListTripsResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ListTripsResponse>> List(CancellationToken cancellationToken)
     {
-        var result = await _listTripUseCase.HandleAsync(new ListTripsQuery(), cancellationToken);
-
-        if (!result.IsFound)
-        {
-            return NotFound();
-        }
+        var result = await _listTripsUseCase.HandleAsync(new ListTripsQuery(), cancellationToken);
 
         return Ok(result.ToResponse());
     }

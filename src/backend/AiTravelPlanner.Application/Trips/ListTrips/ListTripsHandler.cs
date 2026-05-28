@@ -2,7 +2,7 @@ using AiTravelPlanner.Application.Trips.Services;
 
 namespace AiTravelPlanner.Application.Trips.ListTrips;
 
-public class ListTripsHandler : IListTripUseCase
+public sealed class ListTripsHandler : IListTripsUseCase
 {
     private readonly ITripPlanRepository _tripRepository;
 

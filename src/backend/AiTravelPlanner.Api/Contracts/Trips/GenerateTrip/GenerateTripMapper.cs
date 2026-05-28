@@ -34,7 +34,8 @@ public static class GenerateTripMapper
                         Title: activity.Title,
                         Description: activity.Description,
                         EstimatedCost: activity.EstimatedCost,
-                        DurationHours: activity.DurationHours))
+                        DurationHours: activity.DurationHours,
+                        TransitMinutesFromPrevious: activity.TransitMinutesFromPrevious))
                     .ToArray(),
                 Restaurants: day.Restaurants
                     .Select(restaurant => new RestaurantSuggestionResponse(

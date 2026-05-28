@@ -1,7 +1,6 @@
-using AiTravelPlanner.Api.Contracts.Trips;
-using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
+using AiTravelPlanner.Application.Trips.ListTrips;
 
-namespace AiTravelPlanner.Application.Trips.ListTrips;
+namespace AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 
 public static class ListTripsMapper
 {
@@ -17,12 +16,11 @@ public static class ListTripsMapper
                 Currency: plan.Budget.Currency.Value,
                 BudgetCategory: plan.Budget.Category,
                 AiMetadata: new AiGenerationResponse(
-                Provider: plan.AiMetadata.Provider,
-                Model: plan.AiMetadata.Model,
-                PromptTokens: plan.AiMetadata.PromptTokens,
-                CompletionTokens: plan.AiMetadata.CompletionTokens,
-                TotalTokens: plan.AiMetadata.TotalTokens)
-                ))
+                    Provider: plan.AiMetadata.Provider,
+                    Model: plan.AiMetadata.Model,
+                    PromptTokens: plan.AiMetadata.PromptTokens,
+                    CompletionTokens: plan.AiMetadata.CompletionTokens,
+                    TotalTokens: plan.AiMetadata.TotalTokens)))
             .ToArray();
 
         return new ListTripsResponse(trips);

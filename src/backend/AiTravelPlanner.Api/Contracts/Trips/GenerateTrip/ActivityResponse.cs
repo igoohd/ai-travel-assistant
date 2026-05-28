@@ -5,4 +5,5 @@ public sealed record ActivityResponse(
     string Title,
     string Description,
     decimal EstimatedCost,
-    decimal DurationHours);
+    decimal DurationHours,
+    decimal TransitMinutesFromPrevious);

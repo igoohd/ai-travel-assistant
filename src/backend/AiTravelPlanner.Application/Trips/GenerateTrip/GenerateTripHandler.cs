@@ -17,8 +17,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         ITripPlanValidator tripPlanValidator,
         ITripPlanRepository tripPlanRepository,
         ITripInputSanitizer tripInputSanitizer,
-        ILogger<GenerateTripHandler> logger
-        )
+        ILogger<GenerateTripHandler> logger)
     {
         _tripPlanGenerator = tripPlanGenerator;
         _tripPlanValidator = tripPlanValidator;
@@ -42,12 +41,12 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                 .ToArray()
         };
 
-        if (command.NumberOfDays <= 0)
+        if (sanitizedCommand.NumberOfDays <= 0)
         {
             _logger.LogWarning(
                 "Generate trip rejected. Destination: {Destination}. Days: {NumberOfDays}. Reason: {Reason}.",
-                command.Destination,
-                command.NumberOfDays,
+                sanitizedCommand.Destination,
+                sanitizedCommand.NumberOfDays,
                 "Number of days must be greater than zero.");
 
             return GenerateTripResult.Failure(
@@ -56,12 +55,12 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        if (command.Interests.Count == 0)
+        if (sanitizedCommand.Interests.Count == 0)
         {
             _logger.LogWarning(
                 "Generate trip rejected. Destination: {Destination}. Days: {NumberOfDays}. Reason: {Reason}.",
-                command.Destination,
-                command.NumberOfDays,
+                sanitizedCommand.Destination,
+                sanitizedCommand.NumberOfDays,
                 "At least one interest must be provided.");
 
             return GenerateTripResult.Failure(
@@ -70,12 +69,12 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        if (command.Interests.Any(interest => interest.Length > 50))
+        if (sanitizedCommand.Interests.Any(interest => interest.Length > 50))
         {
             _logger.LogWarning(
                 "Generate trip rejected. Destination: {Destination}. Days: {NumberOfDays}. Reason: {Reason}.",
-                command.Destination,
-                command.NumberOfDays,
+                sanitizedCommand.Destination,
+                sanitizedCommand.NumberOfDays,
                 "Each interest must be 50 characters or fewer.");
 
             return GenerateTripResult.Failure(
@@ -89,7 +88,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         try
         {
             plan = await _tripPlanGenerator.GenerateAsync(
-                command,
+                sanitizedCommand,
                 cancellationToken: cancellationToken);
         }
         catch (Exception exception)
@@ -97,7 +96,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             _logger.LogError(
                 exception,
                 "Trip generation failed. Destination: {Destination}.",
-                command.Destination);
+                sanitizedCommand.Destination);
 
             return GenerateTripResult.Failure(
             [
@@ -105,25 +104,23 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-
         var validationIssues = _tripPlanValidator.Validate(plan);
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
             try
             {
-
                 plan = await _tripPlanGenerator.GenerateAsync(
-                    command,
+                    sanitizedCommand,
                     cancellationToken,
                     "The previous plan exceeded the budget. Generate a cheaper version with lower activity and restaurant costs.");
             }
             catch (Exception exception)
             {
                 _logger.LogError(
-                exception,
-                "Trip regeneration failed. Destination: {Destination}.",
-                command.Destination);
+                    exception,
+                    "Trip regeneration failed. Destination: {Destination}.",
+                    sanitizedCommand.Destination);
 
                 return GenerateTripResult.Success(plan, validationIssues, retryCount);
             }
@@ -134,14 +131,14 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
 
         await _tripPlanRepository.SaveAsync(
             plan,
-            command,
+            sanitizedCommand,
             validationIssues,
             cancellationToken);
 
         _logger.LogInformation(
             "Generate trip completed. Destination: {Destination}. Days: {NumberOfDays}. Success: {Success}. RetryCount: {RetryCount}. DurationMs: {DurationMs}.",
-            command.Destination,
-            command.NumberOfDays,
+            sanitizedCommand.Destination,
+            sanitizedCommand.NumberOfDays,
             true,
             retryCount,
             (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
