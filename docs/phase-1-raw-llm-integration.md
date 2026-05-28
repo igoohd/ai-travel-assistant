@@ -4,6 +4,8 @@
 
 Build the first working AI trip generation flow using a direct model provider call, without LangChain, LangGraph, or agents.
 
+The current Phase 1 provider is GitHub Models. This is an intentional provider choice for low-cost prototyping while preserving the PRD's learning goal of raw LLM integration.
+
 ## Current Flow
 
 ```text
@@ -27,7 +29,7 @@ POST /api/trips/generate
 * ASP.NET Core Web API
 * Clean Architecture boundaries
 * Provider-neutral application interfaces
-* Raw LLM provider integration
+* Raw LLM provider integration with GitHub Models
 * Prompting for structured JSON
 * JSON deserialization into provider DTOs
 * Mapping provider DTOs to domain models
@@ -35,6 +37,7 @@ POST /api/trips/generate
 * One retry when budget is exceeded
 * In-memory persistence
 * Basic provider/model/token metadata
+* Configurable fallback to deterministic stub generation
 
 ## What This Phase Avoids
 

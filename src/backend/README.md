@@ -25,7 +25,7 @@ Api -> Application -> Domain
 Api -> Infrastructure -> Application
 ```
 
-The Domain project should not depend on ASP.NET Core, OpenAI, databases, or infrastructure concerns.
+The Domain project should not depend on ASP.NET Core, AI providers, databases, or infrastructure concerns.
 
 ## Current Flow
 
@@ -35,17 +35,25 @@ POST /api/trips/generate
   -> GenerateTripCommand
   -> GenerateTripHandler
   -> ITripPlanGenerator
-  -> StubTripPlanGenerator
+  -> GitHubModelsTripPlanGenerator or StubTripPlanGenerator
+  -> IGitHubModelsClient when GitHub Models is active
   -> ITripPlanValidator
+  -> ITripPlanRepository
   -> Plan
   -> GenerateTripResponse
 ```
 
 ## Current Implementation
 
-The current trip generator is `StubTripPlanGenerator`.
+The current trip generator is selected by configuration:
 
-It uses deterministic placeholder logic instead of AI. This keeps the first version simple while preserving a clean place to introduce a real AI provider later.
+```text
+AiProviders:ActiveProvider
+```
+
+Set it to `GitHubModels` to use `GitHubModelsTripPlanGenerator`, or any other value to fall back to `StubTripPlanGenerator`.
+
+`StubTripPlanGenerator` uses deterministic placeholder logic. This keeps local development simple while preserving a clean fallback when a real AI provider is not configured.
 
 ## GitHub Models Setup
 
@@ -65,4 +73,4 @@ dotnet user-secrets set "AiProviders:GitHubModels:Token" "YOUR_GITHUB_TOKEN" --p
 
 The token needs permission to use GitHub Models. For a fine-grained personal access token, GitHub's REST API docs describe the required scope as `models: read`.
 
-The current app still uses `StubTripPlanGenerator`; GitHub Models is configured but not called yet.
+When `AiProviders:ActiveProvider` is `GitHubModels`, the app calls GitHub Models through `GitHubModelsTripPlanGenerator`.

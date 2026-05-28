@@ -254,7 +254,7 @@ Understand:
 Implement:
 
 * basic itinerary generation
-* OpenAI integration
+* raw AI provider integration
 * simple prompt builder
 
 ---
@@ -274,7 +274,8 @@ Provider SDK
 ## Technologies
 
 * ASP.NET Core
-* OpenAI SDK
+* GitHub Models for the initial implementation
+* provider-neutral AI integration boundary
 
 ---
 
@@ -504,7 +505,8 @@ Choose one:
 
 ## Phase 1
 
-* OpenAI SDK
+* GitHub Models initially
+* raw provider integration
 
 ## Phase 2
 
