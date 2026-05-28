@@ -1,3 +1,4 @@
+using AiTravelPlanner.Api.Contracts;
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 using AiTravelPlanner.Api.Contracts.Trips.ValidateTrip;
@@ -38,7 +39,7 @@ public sealed class TripsController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Errors);
+            return BadRequest(new ApiErrorResponse(result.Errors));
         }
 
         return Ok(result.ToResponse());
@@ -56,7 +57,10 @@ public sealed class TripsController : ControllerBase
 
         if (!result.IsFound)
         {
-            return NotFound();
+            return NotFound(new ApiErrorResponse(
+            [
+                "Trip not found."
+            ]));
         }
 
         return Ok(result.Plan!.ToResponse());
@@ -86,7 +90,7 @@ public sealed class TripsController : ControllerBase
 
         if (!result.IsSuccessful)
         {
-            return NotFound(result.Errors);
+            return NotFound(new ApiErrorResponse(result.Errors));
         }
 
         return Ok(result.ToResponse());

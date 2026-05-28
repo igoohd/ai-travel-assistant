@@ -70,18 +70,49 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        var plan = await _tripPlanGenerator.GenerateAsync(
-            command,
-            cancellationToken: cancellationToken);
+        Plan plan;
+
+        try
+        {
+            plan = await _tripPlanGenerator.GenerateAsync(
+                command,
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(
+                exception,
+                "Trip generation failed. Destination: {Destination}.",
+                command.Destination);
+
+            return GenerateTripResult.Failure(
+            [
+                "Trip generation failed. Please try again."
+            ]);
+        }
+
 
         var validationIssues = _tripPlanValidator.Validate(plan);
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
-            plan = await _tripPlanGenerator.GenerateAsync(
-                command,
-                cancellationToken,
-                "The previous plan exceeded the budget. Generate a cheaper version with lower activity and restaurant costs.");
+            try
+            {
+
+                plan = await _tripPlanGenerator.GenerateAsync(
+                    command,
+                    cancellationToken,
+                    "The previous plan exceeded the budget. Generate a cheaper version with lower activity and restaurant costs.");
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                exception,
+                "Trip regeneration failed. Destination: {Destination}.",
+                command.Destination);
+
+                return GenerateTripResult.Success(plan, validationIssues, retryCount);
+            }
 
             retryCount++;
             validationIssues = _tripPlanValidator.Validate(plan);
