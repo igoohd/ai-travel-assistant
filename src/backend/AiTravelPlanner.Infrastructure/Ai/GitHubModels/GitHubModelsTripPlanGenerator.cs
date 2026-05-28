@@ -80,7 +80,7 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
                             "name": "string",
                             "cuisine": "string",
                             "notes": "string",
-                            "estimatedCost": 40,
+                            "estimatedCost": 40
                         }
                     ]
                 }
