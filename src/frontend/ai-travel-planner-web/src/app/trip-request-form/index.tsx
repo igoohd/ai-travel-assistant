@@ -43,16 +43,8 @@ export function TripRequestForm() {
     setIsSubmitting(true);
 
     try {
-      const trip = await generateTrip({
-        destination: form.destination,
-        numberOfDays: parseInt(form.numberOfDays, 10),
-        budget: parseFloat(form.budget),
-        currency: form.currency,
-        interests: form.interests
-          .split(",")
-          .map((interest) => interest.trim())
-          .filter((interest) => interest.length > 0),
-      });
+      const requestBody = toGenerateTripRequest(form);
+      const trip = await generateTrip(requestBody);
 
       setGeneratedTrip(trip);
     } catch (error) {
@@ -65,6 +57,19 @@ export function TripRequestForm() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  function toGenerateTripRequest(form: TripRequestFormState) {
+    return {
+      destination: form.destination.trim(),
+      numberOfDays: parseInt(form.numberOfDays, 10),
+      budget: parseFloat(form.budget),
+      currency: form.currency.trim().toUpperCase(),
+      interests: form.interests
+        .split(",")
+        .map((interest) => interest.trim())
+        .filter((interest) => interest.length > 0),
+    };
   }
 
   function validateForm(form: TripRequestFormState): string[] {
