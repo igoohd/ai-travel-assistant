@@ -6,6 +6,7 @@ import type {
   GenerateTripResponse,
   TripListItemResponse,
 } from "@/lib/api/tripTypes";
+import { TripResult } from "../trip-result";
 
 export function RecentTrips() {
   const [trips, setTrips] = useState<TripListItemResponse[]>([]);
@@ -130,26 +131,7 @@ export function RecentTrips() {
             </button>
             {selectedTrip?.id === trip.id ? (
               <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
-                <p className="text-sm leading-6 text-slate-700">
-                  {selectedTrip.summary.overview}
-                </p>
-
-                <div className="mt-4 grid gap-3">
-                  {selectedTrip.days.map((day) => (
-                    <article
-                      className="rounded-md border border-slate-200 bg-white p-3"
-                      key={day.dayNumber}
-                    >
-                      <h4 className="font-medium text-slate-950">
-                        Day {day.dayNumber}: {day.title}
-                      </h4>
-
-                      <p className="mt-1 text-sm leading-6 text-slate-600">
-                        {day.description}
-                      </p>
-                    </article>
-                  ))}
-                </div>
+                <TripResult trip={selectedTrip} />
 
                 {(validationMessagesByTripId[trip.id] ?? []).length > 0 ? (
                   <ul className="mt-4 grid gap-2">
