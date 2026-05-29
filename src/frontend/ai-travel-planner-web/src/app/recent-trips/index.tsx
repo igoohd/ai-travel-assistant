@@ -34,6 +34,11 @@ export function RecentTrips() {
   }, []);
 
   async function handleOpenTrip(id: string) {
+    if (selectedTrip?.id === id) {
+      setSelectedTrip(null);
+      return;
+    }
+
     setIsLoadingTrip(true);
     setErrorMessage(null);
 
@@ -80,7 +85,7 @@ export function RecentTrips() {
               type="button"
               onClick={() => handleOpenTrip(trip.id)}
             >
-              Open
+              {selectedTrip?.id === trip.id ? "Close" : "Open"}
             </button>
             {selectedTrip?.id === trip.id ? (
               <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
