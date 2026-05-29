@@ -1,4 +1,4 @@
-import { TripRequestForm } from "./trip-request-form";
+import { Tabs } from "./tabs";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
           and build the trip request flow step by step.
         </p>
 
-        <TripRequestForm />
+        <Tabs />
       </section>
     </main>
   );
