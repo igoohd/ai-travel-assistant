@@ -16,7 +16,7 @@ export function TripRequestForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [generatedTrip, setGeneratedTrip] =
-    useState<GenerateTripResponse | null>();
+    useState<GenerateTripResponse | null>(null);
 
   function updateField(field: keyof TripRequestFormState, value: string) {
     setForm((currentForm) => ({
@@ -136,13 +136,157 @@ export function TripRequestForm() {
           <h3 className="text-base font-semibold text-slate-950">
             {generatedTrip.destination}
           </h3>
+
           <p className="mt-1 text-sm text-slate-600">
             {generatedTrip.numberOfDays} days · {generatedTrip.budget.currency}{" "}
             {generatedTrip.budget.total}
           </p>
+
           <p className="mt-3 text-sm leading-6 text-slate-700">
             {generatedTrip.summary.overview}
           </p>
+
+          <div className="mt-5 rounded-md border border-slate-200 bg-slate-50 p-4">
+            <h4 className="text-sm font-semibold text-slate-950">
+              Budget estimate
+            </h4>
+
+            <dl className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+              <div>
+                <dt className="font-medium text-slate-900">Hotel</dt>
+                <dd>
+                  {generatedTrip.budget.currency} {generatedTrip.budget.hotel}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Transportation</dt>
+                <dd>
+                  {generatedTrip.budget.currency}{" "}
+                  {generatedTrip.budget.transportation}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Food</dt>
+                <dd>
+                  {generatedTrip.budget.currency} {generatedTrip.budget.food}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Activities</dt>
+                <dd>
+                  {generatedTrip.budget.currency}{" "}
+                  {generatedTrip.budget.activities}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Category</dt>
+                <dd>{generatedTrip.budget.category}</dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Retries</dt>
+                <dd>{generatedTrip.diagnostics.retryCount}</dd>
+              </div>
+            </dl>
+          </div>
+
+          {generatedTrip.validationIssues.length > 0 ? (
+            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
+              <h4 className="text-sm font-semibold text-amber-950">
+                Validation issues
+              </h4>
+
+              <ul className="mt-2 grid gap-2">
+                {generatedTrip.validationIssues.map((issue) => (
+                  <li className="text-sm text-amber-800" key={issue.code}>
+                    <span className="font-medium">{issue.severity}</span>:{" "}
+                    {issue.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {generatedTrip.validationIssues.length > 0 ? (
+            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
+              <h4 className="text-sm font-semibold text-amber-950">
+                Validation issues
+              </h4>
+
+              <ul className="mt-2 grid gap-2">
+                {generatedTrip.validationIssues.map((issue) => (
+                  <li className="text-sm text-amber-800" key={issue.code}>
+                    <span className="font-medium">{issue.severity}</span>:{" "}
+                    {issue.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          <div className="mt-5 grid gap-4">
+            {generatedTrip.days.map((day) => (
+              <article
+                className="rounded-md border border-slate-200 bg-slate-50 p-4"
+                key={day.dayNumber}
+              >
+                <h4 className="font-semibold text-slate-950">
+                  Day {day.dayNumber}: {day.title}
+                </h4>
+
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  {day.description}
+                </p>
+
+                <div className="mt-4 grid gap-3">
+                  {day.activities.map((activity) => (
+                    <div
+                      className="rounded-md border border-slate-200 bg-white p-3"
+                      key={`${day.dayNumber}-${activity.timeOfDay}-${activity.title}`}
+                    >
+                      <p className="text-xs font-medium uppercase text-slate-500">
+                        {activity.timeOfDay}
+                      </p>
+
+                      <p className="mt-1 font-medium text-slate-900">
+                        {activity.title}
+                      </p>
+
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        {activity.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                {day.restaurants.length > 0 ? (
+                  <div className="mt-4">
+                    <h5 className="text-sm font-semibold text-slate-900">
+                      Restaurant ideas
+                    </h5>
+
+                    <ul className="mt-2 grid gap-2">
+                      {day.restaurants.map((restaurant) => (
+                        <li
+                          className="text-sm text-slate-600"
+                          key={`${day.dayNumber}-${restaurant.name}`}
+                        >
+                          <span className="font-medium text-slate-900">
+                            {restaurant.name}
+                          </span>{" "}
+                          · {restaurant.cuisine} · {restaurant.notes}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </article>
+            ))}
+          </div>
         </section>
       ) : null}
     </section>
