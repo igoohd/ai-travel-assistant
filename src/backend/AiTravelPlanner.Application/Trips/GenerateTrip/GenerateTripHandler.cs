@@ -104,7 +104,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             ]);
         }
 
-        var validationIssues = _tripPlanValidator.Validate(plan);
+        var validationIssues = _tripPlanValidator.Validate(plan, sanitizedCommand);
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
@@ -126,7 +126,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             }
 
             retryCount++;
-            validationIssues = _tripPlanValidator.Validate(plan);
+            validationIssues = _tripPlanValidator.Validate(plan, sanitizedCommand);
         }
 
         await _tripPlanRepository.SaveAsync(

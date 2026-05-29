@@ -35,4 +35,18 @@ public sealed class TripPlanValidator : ITripPlanValidator
 
         return issues;
     }
+    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
+    {
+        var issues = Validate(plan).ToList();
+
+        if (plan.Budget.Total > command.Budget)
+        {
+            issues.Add(new ValidationIssue(
+                ValidationIssueCodes.BudgetExceeded,
+                $"The total estimated cost of the trip (${plan.Budget.Total:F2}) exceeds the specified budget (${command.Budget:F2}).",
+                ValidationSeverity.Warning));
+        }
+
+        return issues;
+    }
 }
