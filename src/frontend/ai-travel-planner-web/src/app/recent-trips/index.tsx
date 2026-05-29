@@ -19,14 +19,16 @@ export function RecentTrips() {
     Record<string, string[]>
   >({});
   const [validatingTripId, setValidatingTripId] = useState<string | null>(null);
-  const [isLoadingTrips, setIsLoadingTrips] = useState(false);
+  const [hasLoadedTrips, setHasLoadedTrips] = useState(false);
+  const [isRefreshingTrips, setIsRefreshingTrips] = useState(false);
 
-  async function loadTrips() {
-    setIsLoadingTrips(true);
-    setErrorMessage(null);
+  async function refreshTrips() {
+    setIsRefreshingTrips(true);
 
     try {
       const response = await listTrips();
+
+      setErrorMessage(null);
       setTrips(response.trips);
     } catch (error) {
       if (error instanceof Error) {
@@ -36,12 +38,28 @@ export function RecentTrips() {
 
       setErrorMessage("Something went wrong while loading trips.");
     } finally {
-      setIsLoadingTrips(false);
+      setIsRefreshingTrips(false);
+      setHasLoadedTrips(true);
     }
   }
 
   useEffect(() => {
-    void loadTrips();
+    listTrips()
+      .then((response) => {
+        setErrorMessage(null);
+        setTrips(response.trips);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+          return;
+        }
+
+        setErrorMessage("Something went wrong while loading trips.");
+      })
+      .finally(() => {
+        setHasLoadedTrips(true);
+      });
   }, []);
 
   async function handleOpenTrip(id: string) {
@@ -104,11 +122,11 @@ export function RecentTrips() {
 
       <button
         className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 mb-3"
-        disabled={isLoadingTrips}
+        disabled={isRefreshingTrips}
         type="button"
-        onClick={() => void loadTrips()}
+        onClick={() => void refreshTrips()}
       >
-        {isLoadingTrips ? "Refreshing..." : "Refresh"}
+        {isRefreshingTrips ? "Refreshing..." : "Refresh"}
       </button>
 
       {errorMessage ? (
@@ -118,6 +136,17 @@ export function RecentTrips() {
       ) : null}
 
       <div className="mt-4 grid gap-3">
+        {!hasLoadedTrips ? (
+          <p className="mt-4 rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-600">
+            Loading trips...
+          </p>
+        ) : null}
+
+        {hasLoadedTrips && trips.length === 0 ? (
+          <p className="mt-4 rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-600">
+            No trips generated yet.
+          </p>
+        ) : null}
         {trips.map((trip) => (
           <article
             className="rounded-md border border-slate-200 bg-white p-4"
