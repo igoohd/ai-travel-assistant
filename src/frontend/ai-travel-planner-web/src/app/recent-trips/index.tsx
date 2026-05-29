@@ -19,23 +19,29 @@ export function RecentTrips() {
     Record<string, string[]>
   >({});
   const [validatingTripId, setValidatingTripId] = useState<string | null>(null);
+  const [isLoadingTrips, setIsLoadingTrips] = useState(false);
+
+  async function loadTrips() {
+    setIsLoadingTrips(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await listTrips();
+      setTrips(response.trips);
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      setErrorMessage("Something went wrong while loading trips.");
+    } finally {
+      setIsLoadingTrips(false);
+    }
+  }
 
   useEffect(() => {
-    async function loadTrips() {
-      try {
-        const response = await listTrips();
-        setTrips(response.trips);
-      } catch (error) {
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-          return;
-        }
-
-        setErrorMessage("Something went wrong while loading trips.");
-      }
-    }
-
-    loadTrips();
+    void loadTrips();
   }, []);
 
   async function handleOpenTrip(id: string) {
@@ -92,7 +98,18 @@ export function RecentTrips() {
   }
   return (
     <section className="mt-10">
-      <h2 className="text-lg font-semibold text-slate-950">Recent trips</h2>
+      <h2 className="text-lg font-semibold text-slate-950 mb-2">
+        Recent trips
+      </h2>
+
+      <button
+        className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 mb-3"
+        disabled={isLoadingTrips}
+        type="button"
+        onClick={() => void loadTrips()}
+      >
+        {isLoadingTrips ? "Refreshing..." : "Refresh"}
+      </button>
 
       {errorMessage ? (
         <p className="mt-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -130,7 +147,7 @@ export function RecentTrips() {
               {validatingTripId === trip.id ? "Validating..." : "Validate"}
             </button>
             {selectedTrip?.id === trip.id ? (
-              <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
+              <div className="mt-4">
                 <TripResult trip={selectedTrip} />
 
                 {(validationMessagesByTripId[trip.id] ?? []).length > 0 ? (
