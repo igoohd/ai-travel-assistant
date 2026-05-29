@@ -211,22 +211,38 @@ export function TripRequestForm() {
             </div>
           ) : null}
 
-          {generatedTrip.validationIssues.length > 0 ? (
-            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
-              <h4 className="text-sm font-semibold text-amber-950">
-                Validation issues
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+              <h4 className="text-sm font-semibold text-slate-950">
+                Highlights
               </h4>
 
               <ul className="mt-2 grid gap-2">
-                {generatedTrip.validationIssues.map((issue) => (
-                  <li className="text-sm text-amber-800" key={issue.code}>
-                    <span className="font-medium">{issue.severity}</span>:{" "}
-                    {issue.message}
+                {generatedTrip.summary.highlights.map((highlight) => (
+                  <li
+                    className="text-sm leading-6 text-slate-600"
+                    key={highlight}
+                  >
+                    {highlight}
                   </li>
                 ))}
               </ul>
             </div>
-          ) : null}
+
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+              <h4 className="text-sm font-semibold text-slate-950">
+                Travel tips
+              </h4>
+
+              <ul className="mt-2 grid gap-2">
+                {generatedTrip.summary.travelTips.map((tip) => (
+                  <li className="text-sm leading-6 text-slate-600" key={tip}>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
           <div className="mt-5 grid gap-4">
             {generatedTrip.days.map((day) => (
