@@ -1,3 +1,5 @@
+import { TripRequestForm } from "./trip-request-form";
+
 export default function Home() {
   return (
     <main className="min-h-screen px-6 py-10">
@@ -10,6 +12,8 @@ export default function Home() {
           This screen is intentionally clean. Next we will connect it to the API
           and build the trip request flow step by step.
         </p>
+
+        <TripRequestForm />
       </section>
     </main>
   );
