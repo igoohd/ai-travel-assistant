@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getTrip, listTrips } from "@/lib/api/tripsApi";
+import { getTrip, listTrips, validateTrip } from "@/lib/api/tripsApi";
 import type {
   GenerateTripResponse,
   TripListItemResponse,
@@ -14,6 +14,10 @@ export function RecentTrips() {
     null,
   );
   const [isLoadingTrip, setIsLoadingTrip] = useState(false);
+  const [validationMessagesByTripId, setValidationMessagesByTripId] = useState<
+    Record<string, string[]>
+  >({});
+  const [validatingTripId, setValidatingTripId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadTrips() {
@@ -56,6 +60,35 @@ export function RecentTrips() {
       setIsLoadingTrip(false);
     }
   }
+
+  async function handleValidateTrip(id: string) {
+    setValidatingTripId(id);
+    setValidationMessagesByTripId((current) => ({
+      ...current,
+      [id]: [],
+    }));
+    setErrorMessage(null);
+
+    try {
+      const response = await validateTrip(id);
+
+      setValidationMessagesByTripId((current) => ({
+        ...current,
+        [id]: response.validationIssues.map(
+          (issue) => `${issue.severity}: ${issue.message}`,
+        ),
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      setErrorMessage("Something went wrong while validating the trip.");
+    } finally {
+      setValidatingTripId(null);
+    }
+  }
   return (
     <section className="mt-10">
       <h2 className="text-lg font-semibold text-slate-950">Recent trips</h2>
@@ -80,12 +113,20 @@ export function RecentTrips() {
             </p>
 
             <button
-              className="mt-3 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700"
+              className="mt-3 mr-3 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700"
               disabled={isLoadingTrip}
               type="button"
               onClick={() => handleOpenTrip(trip.id)}
             >
               {selectedTrip?.id === trip.id ? "Close" : "Open"}
+            </button>
+            <button
+              className="mt-3 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700"
+              disabled={validatingTripId === trip.id}
+              type="button"
+              onClick={() => handleValidateTrip(trip.id)}
+            >
+              {validatingTripId === trip.id ? "Validating..." : "Validate"}
             </button>
             {selectedTrip?.id === trip.id ? (
               <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
@@ -109,6 +150,18 @@ export function RecentTrips() {
                     </article>
                   ))}
                 </div>
+
+                {(validationMessagesByTripId[trip.id] ?? []).length > 0 ? (
+                  <ul className="mt-4 grid gap-2">
+                    {(validationMessagesByTripId[trip.id] ?? []).map(
+                      (message) => (
+                        <li className="text-sm text-amber-800" key={message}>
+                          {message}
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                ) : null}
               </div>
             ) : null}
           </article>
