@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { TripRequestFormState } from "./types";
 import { generateTrip } from "@/lib/api/tripsApi";
-import { GenerateTripResponse } from "@/lib/api/tripTypes";
+import type { GenerateTripResponse } from "@/lib/api/tripTypes";
 
 export function TripRequestForm() {
   const [form, setForm] = useState<TripRequestFormState>({
@@ -302,6 +302,46 @@ export function TripRequestForm() {
                 ) : null}
               </article>
             ))}
+          </div>
+          <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
+            <h4 className="text-sm font-semibold text-slate-950">
+              AI metadata
+            </h4>
+
+            <dl className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+              <div>
+                <dt className="font-medium text-slate-900">Provider</dt>
+                <dd>{generatedTrip.aiMetadata.provider}</dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Model</dt>
+                <dd>{generatedTrip.aiMetadata.model}</dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Prompt tokens</dt>
+                <dd>
+                  {generatedTrip.aiMetadata.promptTokens ?? "Not available"}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">
+                  Completion tokens
+                </dt>
+                <dd>
+                  {generatedTrip.aiMetadata.completionTokens ?? "Not available"}
+                </dd>
+              </div>
+
+              <div>
+                <dt className="font-medium text-slate-900">Total tokens</dt>
+                <dd>
+                  {generatedTrip.aiMetadata.totalTokens ?? "Not available"}
+                </dd>
+              </div>
+            </dl>
           </div>
         </section>
       ) : null}
