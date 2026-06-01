@@ -2,10 +2,10 @@ using AiTravelPlanner.Api.Contracts;
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 using AiTravelPlanner.Api.Contracts.Trips.ValidateTrip;
-using AiTravelPlanner.Application.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.GetTrip;
-using AiTravelPlanner.Application.Trips.ListTrips;
-using AiTravelPlanner.Application.Trips.ValidateTrip;
+using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
+using AiTravelPlanner.Application.Trips.UseCases.GetTrip;
+using AiTravelPlanner.Application.Trips.UseCases.ListTrips;
+using AiTravelPlanner.Application.Trips.UseCases.ValidateTrip;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AiTravelPlanner.Api.Controllers;

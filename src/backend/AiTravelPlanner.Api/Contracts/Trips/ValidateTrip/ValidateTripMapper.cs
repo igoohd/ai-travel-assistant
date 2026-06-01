@@ -1,5 +1,5 @@
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.ValidateTrip;
+using AiTravelPlanner.Application.Trips.UseCases.ValidateTrip;
 
 namespace AiTravelPlanner.Api.Contracts.Trips.ValidateTrip;
 

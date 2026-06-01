@@ -1,5 +1,5 @@
-using AiTravelPlanner.Application.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.Services;
+using AiTravelPlanner.Application.Trips.Ports;
+using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Infrastructure.Persistence;

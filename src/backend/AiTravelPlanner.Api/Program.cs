@@ -1,9 +1,13 @@
-using AiTravelPlanner.Application.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.GetTrip;
-using AiTravelPlanner.Application.Trips.ListTrips;
-using AiTravelPlanner.Application.Trips.Services;
+using AiTravelPlanner.Application.Trips.Ports;
+using AiTravelPlanner.Application.Trips.Sanitization;
+using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
+using AiTravelPlanner.Application.Trips.UseCases.GetTrip;
+using AiTravelPlanner.Application.Trips.UseCases.ListTrips;
+using AiTravelPlanner.Application.Trips.UseCases.ValidateTrip;
+using AiTravelPlanner.Application.Trips.Validation;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
+using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
 
 const string FrontendCorsPolicy = "FrontendCorsPolicy";

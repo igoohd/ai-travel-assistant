@@ -1,4 +1,4 @@
-using AiTravelPlanner.Application.Trips.GenerateTrip;
+using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 
 namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;

@@ -1,6 +1,6 @@
 using System.Text.Json;
-using AiTravelPlanner.Application.Trips.GenerateTrip;
-using AiTravelPlanner.Application.Trips.Services;
+using AiTravelPlanner.Application.Trips.Ports;
+using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

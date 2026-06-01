@@ -1,4 +1,4 @@
-using AiTravelPlanner.Application.Trips.ListTrips;
+using AiTravelPlanner.Application.Trips.UseCases.ListTrips;
 
 namespace AiTravelPlanner.Api.Contracts.Trips.ListTrips;
 
