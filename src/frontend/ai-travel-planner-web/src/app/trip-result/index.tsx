@@ -67,6 +67,11 @@ export function TripResult({ trip }: TripResultProps) {
                 : "None"}
             </dd>
           </div>
+
+          <div>
+            <dt className="font-medium text-slate-900">Duration (ms)</dt>
+            <dd>{trip.diagnostics.durationMs}</dd>
+          </div>
         </dl>
       </div>
 
