@@ -6,6 +6,7 @@ public sealed record GenerateTripResult(
     Plan? Plan,
     IReadOnlyList<ValidationIssue> ValidationIssues,
     int RetryCount,
+    IReadOnlyList<string> RetryReasons,
     IReadOnlyList<string> Errors)
 {
     public bool IsSuccess => Errors.Count == 0;
@@ -13,13 +14,14 @@ public sealed record GenerateTripResult(
     public static GenerateTripResult Success(
         Plan plan,
         IReadOnlyList<ValidationIssue> validationIssues,
-        int retryCount)
+        int retryCount,
+        IReadOnlyList<string> retryReasons)
     {
-        return new GenerateTripResult(plan, validationIssues, retryCount, []);
+        return new GenerateTripResult(plan, validationIssues, retryCount, retryReasons, []);
     }
 
     public static GenerateTripResult Failure(IReadOnlyList<string> errors)
     {
-        return new GenerateTripResult(null, [], 0, errors);
+        return new GenerateTripResult(null, [], 0, [], errors);
     }
 }

@@ -30,6 +30,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
     {
         var startedAt = DateTimeOffset.UtcNow;
         var retryCount = 0;
+        var retryReasons = new List<string>();
 
         var sanitizedCommand = command with
         {
@@ -122,7 +123,9 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                     "Trip regeneration failed. Destination: {Destination}.",
                     sanitizedCommand.Destination);
 
-                return GenerateTripResult.Success(plan, validationIssues, retryCount);
+                retryReasons.Add("The previous plan exceeded the budget. Attempted to generate a cheaper version, but it failed.");
+
+                return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons);
             }
 
             retryCount++;
@@ -143,6 +146,6 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             retryCount,
             (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
 
-        return GenerateTripResult.Success(plan, validationIssues, retryCount);
+        return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons);
     }
 }

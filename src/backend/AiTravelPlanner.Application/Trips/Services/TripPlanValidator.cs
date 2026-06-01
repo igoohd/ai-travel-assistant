@@ -43,7 +43,7 @@ public sealed class TripPlanValidator : ITripPlanValidator
         {
             issues.Add(new ValidationIssue(
                 ValidationIssueCodes.BudgetExceeded,
-                $"The total estimated cost of the trip (${plan.Budget.Total:F2}) exceeds the specified budget (${command.Budget:F2}).",
+                $"The total estimated cost of the trip ({plan.Budget.Currency.Value} {plan.Budget.Total:F2}) exceeds the specified budget ({plan.Budget.Currency.Value} {command.Budget:F2}).",
                 ValidationSeverity.Warning));
         }
 
