@@ -58,6 +58,11 @@ export function TripResult({ trip }: TripResultProps) {
             <dt className="font-medium text-slate-900">Retries</dt>
             <dd>{trip.diagnostics.retryCount}</dd>
           </div>
+
+          <div>
+            <dt className="font-medium text-slate-900">Retry Reasons</dt>
+            <dd>{trip.diagnostics.retryReasons.join(", ")}</dd>
+          </div>
         </dl>
       </div>
 

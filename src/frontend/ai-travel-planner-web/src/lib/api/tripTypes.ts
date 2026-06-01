@@ -74,6 +74,7 @@ export type AiGenerationResponse = {
 
 export type GenerationDiagnosticsResponse = {
   retryCount: number;
+  retryReasons: string[];
 };
 
 export type ListTripsResponse = {

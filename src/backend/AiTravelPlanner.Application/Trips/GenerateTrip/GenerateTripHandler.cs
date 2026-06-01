@@ -123,12 +123,12 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                     "Trip regeneration failed. Destination: {Destination}.",
                     sanitizedCommand.Destination);
 
-                retryReasons.Add("The previous plan exceeded the budget. Attempted to generate a cheaper version, but it failed.");
 
                 return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons);
             }
 
             retryCount++;
+            retryReasons.Add(ValidationIssueCodes.BudgetExceeded);
             validationIssues = _tripPlanValidator.Validate(plan, sanitizedCommand);
         }
 
