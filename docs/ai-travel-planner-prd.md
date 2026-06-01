@@ -279,6 +279,22 @@ Provider SDK
 
 ---
 
+## Phase 1 Observability Implemented
+
+The raw LLM integration currently tracks:
+
+* AI provider
+* AI model
+* prompt tokens
+* completion tokens
+* total tokens
+* retry count
+* retry reasons
+* generation duration in milliseconds
+* validation issues
+
+---
+
 # Phase 2 - Introduce LangChain
 
 ## Goal
