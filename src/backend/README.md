@@ -9,13 +9,42 @@ AiTravelPlanner.Api
   -> HTTP controllers and API contracts
 
 AiTravelPlanner.Application
-  -> use cases, application services, orchestration
+  -> use cases, ports, validation, sanitization, orchestration
 
 AiTravelPlanner.Domain
   -> core trip planning models and domain rules
 
 AiTravelPlanner.Infrastructure
   -> external integrations such as AI providers, databases, telemetry
+```
+
+## Application Structure
+
+```text
+Application/Trips/UseCases
+  -> workflows/actions such as GenerateTrip, GetTrip, ListTrips, ValidateTrip
+
+Application/Trips/Ports
+  -> interfaces the application needs from outside layers
+
+Application/Trips/Validation
+  -> trip validation rules
+
+Application/Trips/Sanitization
+  -> input cleanup before use case execution
+```
+
+Infrastructure provides concrete implementations for application ports:
+
+```text
+Infrastructure/Ai/GitHubModels
+  -> real AI provider adapter
+
+Infrastructure/Ai/Stub
+  -> deterministic local fallback generator
+
+Infrastructure/Persistence
+  -> trip storage adapter
 ```
 
 ## Dependency Direction
