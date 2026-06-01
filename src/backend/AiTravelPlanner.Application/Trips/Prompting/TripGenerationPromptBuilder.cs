@@ -1,7 +1,8 @@
-using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 
-public class TripGenerationPromptBuilder : ITripGenerationPromptBuilder
+namespace AiTravelPlanner.Application.Trips.Prompting;
+
+public sealed class TripGenerationPromptBuilder : ITripGenerationPromptBuilder
 {
     public string Build(GenerateTripCommand command, string? additionalInstruction = null)
     {
