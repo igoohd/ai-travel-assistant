@@ -1,4 +1,5 @@
 using AiTravelPlanner.Application.Trips.Ports;
+using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.Sanitization;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Application.Trips.UseCases.GetTrip;
@@ -61,6 +62,7 @@ builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
 
 builder.Services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 builder.Services.AddSingleton<ITripInputSanitizer, TripInputSanitizer>();
+builder.Services.AddSingleton<ITripGenerationPromptBuilder, TripGenerationPromptBuilder>();
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AiTravelPlanner.Application.Trips.Ports;
+using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 using Microsoft.Extensions.Logging;
@@ -12,15 +13,18 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
     private readonly IGitHubModelsClient _client;
     private readonly GitHubModelsOptions _options;
     private readonly ILogger<GitHubModelsTripPlanGenerator> _logger;
+    private readonly ITripGenerationPromptBuilder _promptBuilder;
 
     public GitHubModelsTripPlanGenerator(
         IGitHubModelsClient client,
         ILogger<GitHubModelsTripPlanGenerator> logger,
-        IOptions<GitHubModelsOptions> options)
+        IOptions<GitHubModelsOptions> options,
+        ITripGenerationPromptBuilder promptBuilder)
     {
         _client = client;
         _logger = logger;
         _options = options.Value;
+        _promptBuilder = promptBuilder;
     }
 
     public async Task<Plan> GenerateAsync(
@@ -28,67 +32,8 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
         CancellationToken cancellationToken,
         string? additionalInstruction = null)
     {
-        var additionalInstructionText = string.IsNullOrWhiteSpace(additionalInstruction)
-            ? "No additional instruction."
-            : additionalInstruction;
 
-        var prompt = $$"""
-        Create a personalized travel itinerary.
-
-        Trip request:
-        - Destination: {{command.Destination}}
-        - Number of days: {{command.NumberOfDays}}
-        - Budget: {{command.Budget}} {{command.Currency}}
-        - Interests: {{string.Join(", ", command.Interests)}}
-
-        Rules:
-        - Return exactly {{command.NumberOfDays}} days.
-        - Each day must include 2 to 4 activities.
-        - Each day must include at least 1 restaurant suggestion.
-        - Estimated costs must be numbers, not strings.
-        - Keep the total estimated activity and restaurant costs reasonable for the budget.
-        - Return only valid JSON.
-        - Do not wrap the JSON in Markdown.
-        - Do not include explanations outside the JSON.
-        - Each activity must include durationHours as a number between 0.5 and 4.
-        - transitMinutesFromPrevious must be 0 for the first activity of each day.
-        - transitMinutesFromPrevious should be a realistic number between 0 and 90.
-
-        Additional instruction:
-        - {{additionalInstructionText}}
-
-
-        JSON shape:
-        {
-            "overview": "string",
-            "days": [
-                {
-                    "dayNumber": 1,
-                    "title": "string",
-                    "description": "string",
-                    "activities": [
-                        {
-                            "timeOfDay": "Morning",
-                            "title": "string",
-                            "description": "string",
-                            "estimatedCost": 50,
-                            "durationHours": 2
-                        }
-                    ],
-                    "restaurants": [
-                        {
-                            "name": "string",
-                            "cuisine": "string",
-                            "notes": "string",
-                            "estimatedCost": 40
-                        }
-                    ]
-                }
-            ],
-            "highlights": ["string"],
-            "travelTips": ["string"]
-        }
-        """;
+        var prompt = _promptBuilder.Build(command, additionalInstruction);
 
         var completion = await _client.CompleteChatAsync(
             [
