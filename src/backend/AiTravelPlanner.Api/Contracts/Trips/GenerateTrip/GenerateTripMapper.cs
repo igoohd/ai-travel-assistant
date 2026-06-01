@@ -78,7 +78,8 @@ public static class GenerateTripMapper
                 TotalTokens: tripPlan.AiMetadata.TotalTokens),
             Diagnostics: new GenerationDiagnosticsResponse(
                 RetryCount: result.RetryCount,
-                RetryReasons: result.RetryReasons)
+                RetryReasons: result.RetryReasons,
+                DurationMs: result.DurationMs)
         );
     }
 
@@ -89,6 +90,7 @@ public static class GenerateTripMapper
             ValidationIssues: [],
             RetryCount: 0,
             RetryReasons: [],
+            DurationMs: 0,
             Errors: [])
             .ToResponse();
     }

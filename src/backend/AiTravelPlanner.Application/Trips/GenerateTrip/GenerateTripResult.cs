@@ -6,6 +6,7 @@ public sealed record GenerateTripResult(
     Plan? Plan,
     IReadOnlyList<ValidationIssue> ValidationIssues,
     int RetryCount,
+    int DurationMs,
     IReadOnlyList<string> RetryReasons,
     IReadOnlyList<string> Errors)
 {
@@ -15,13 +16,14 @@ public sealed record GenerateTripResult(
         Plan plan,
         IReadOnlyList<ValidationIssue> validationIssues,
         int retryCount,
-        IReadOnlyList<string> retryReasons)
+        IReadOnlyList<string> retryReasons,
+        int durationMs)
     {
-        return new GenerateTripResult(plan, validationIssues, retryCount, retryReasons, []);
+        return new GenerateTripResult(plan, validationIssues, retryCount, durationMs, retryReasons, []);
     }
 
     public static GenerateTripResult Failure(IReadOnlyList<string> errors)
     {
-        return new GenerateTripResult(null, [], 0, [], errors);
+        return new GenerateTripResult(null, [], 0, 0, [], errors);
     }
 }

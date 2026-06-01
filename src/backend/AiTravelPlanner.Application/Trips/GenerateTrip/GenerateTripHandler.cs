@@ -31,6 +31,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         var startedAt = DateTimeOffset.UtcNow;
         var retryCount = 0;
         var retryReasons = new List<string>();
+        var durationMs = 0;
 
         var sanitizedCommand = command with
         {
@@ -131,8 +132,8 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
                     "Trip regeneration failed. Destination: {Destination}.",
                     sanitizedCommand.Destination);
 
-
-                return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons);
+                durationMs = (int)Math.Round((DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
+                return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons, durationMs);
             }
 
             retryCount++;
@@ -145,14 +146,15 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             validationIssues,
             cancellationToken);
 
+        durationMs = (int)Math.Round((DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
         _logger.LogInformation(
             "Generate trip completed. Destination: {Destination}. Days: {NumberOfDays}. Success: {Success}. RetryCount: {RetryCount}. DurationMs: {DurationMs}.",
             sanitizedCommand.Destination,
             sanitizedCommand.NumberOfDays,
             true,
             retryCount,
-            (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
+            durationMs);
 
-        return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons);
+        return GenerateTripResult.Success(plan, validationIssues, retryCount, retryReasons, durationMs);
     }
 }
