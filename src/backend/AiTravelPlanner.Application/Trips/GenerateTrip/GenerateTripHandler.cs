@@ -110,6 +110,13 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
             retryReasons.Add(ValidationIssueCodes.BudgetExceeded);
+            _logger.LogInformation(
+                "Trip generation retry triggered. Destination: {Destination}. Reason: {Reason}. EstimatedTotal: {EstimatedTotal}. RequestedBudget: {RequestedBudget}.",
+                sanitizedCommand.Destination,
+                ValidationIssueCodes.BudgetExceeded,
+                plan.Budget.Total,
+                sanitizedCommand.Budget);
+
             try
             {
                 plan = await _tripPlanGenerator.GenerateAsync(
