@@ -10,15 +10,46 @@ public sealed class TripGenerationPromptBuilder : ITripGenerationPromptBuilder
             ? "No additional instruction."
             : additionalInstruction;
 
+        var tripRequestSection = BuildTripRequestSection(command);
+        var rulesSection = BuildRulesSection(command);
+        var jsonShapeSection = BuildJsonShapeSection();
+
         return $$"""
         Create a personalized travel itinerary.
 
+        {{tripRequestSection}}
+
+        {{rulesSection}}
+
+        Additional instruction:
+        - {{additionalInstructionText}}
+
+        {{jsonShapeSection}}
+        """;
+
+    }
+
+    public string BuildSystemPrompt()
+    {
+        return """
+        You are a travel planning assistant that creates personalized travel itineraries based on user preferences and constraints.
+        """;
+    }
+
+    private static string BuildTripRequestSection(GenerateTripCommand command)
+    {
+        return $$"""
         Trip request:
         - Destination: {{command.Destination}}
         - Number of days: {{command.NumberOfDays}}
         - Budget: {{command.Budget}} {{command.Currency}}
         - Interests: {{string.Join(", ", command.Interests)}}
+        """;
+    }
 
+    private static string BuildRulesSection(GenerateTripCommand command)
+    {
+        return $$"""
         Rules:
         - Return exactly {{command.NumberOfDays}} days.
         - Each day must include 2 to 4 activities.
@@ -31,11 +62,12 @@ public sealed class TripGenerationPromptBuilder : ITripGenerationPromptBuilder
         - Each activity must include durationHours as a number between 0.5 and 4.
         - transitMinutesFromPrevious must be 0 for the first activity of each day.
         - transitMinutesFromPrevious should be a realistic number between 0 and 90.
+        """;
+    }
 
-        Additional instruction:
-        - {{additionalInstructionText}}
-
-
+    private static string BuildJsonShapeSection()
+    {
+        return """
         JSON shape:
         {
             "overview": "string",

@@ -7,4 +7,6 @@ public interface ITripGenerationPromptBuilder
     string Build(
         GenerateTripCommand command,
         string? additionalInstruction = null);
+
+    string BuildSystemPrompt();
 }

@@ -34,12 +34,12 @@ public sealed class GitHubModelsTripPlanGenerator : ITripPlanGenerator
     {
 
         var prompt = _promptBuilder.Build(command, additionalInstruction);
-
+        var systemPrompt = _promptBuilder.BuildSystemPrompt();
         var completion = await _client.CompleteChatAsync(
             [
                 new GitHubModelsMessage(
                     Role: "system",
-                    Content: "You are a helpful travel planning assistant."),
+                    Content: systemPrompt),
                 new GitHubModelsMessage(
                     Role: "user",
                     Content: prompt)

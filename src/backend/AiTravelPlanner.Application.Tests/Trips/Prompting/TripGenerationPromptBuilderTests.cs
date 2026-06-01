@@ -28,4 +28,15 @@ public sealed class TripGenerationPromptBuilderTests
         Assert.Contains("Generate a cheaper version.", prompt);
         Assert.Contains("Return only valid JSON.", prompt);
     }
+
+    [Fact]
+    public void BuildSystemPrompt_ReturnsTravelPlanningInstruction()
+    {
+        var builder = new TripGenerationPromptBuilder();
+
+        var prompt = builder.BuildSystemPrompt();
+
+        Assert.Contains("travel planning assistant", prompt);
+        Assert.Contains("personalized travel itineraries", prompt);
+    }
 }
