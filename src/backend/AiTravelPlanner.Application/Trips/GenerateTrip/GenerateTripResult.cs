@@ -17,8 +17,7 @@ public sealed record GenerateTripResult(
         IReadOnlyList<ValidationIssue> validationIssues,
         int retryCount,
         IReadOnlyList<string> retryReasons,
-        int durationMs
-        )
+        int durationMs)
     {
         return new GenerateTripResult(plan, validationIssues, retryCount, retryReasons, durationMs, []);
     }
