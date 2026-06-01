@@ -16,16 +16,16 @@ public class ValidateTripHandler : IValidateTripUseCase
 
     public async Task<ValidateTripResult> HandleAsync(ValidateTripCommand command, CancellationToken cancellationToken)
     {
-        var plan = await _tripPlanRepository.GetByIdAsync(
+        var storedTrip = await _tripPlanRepository.GetByIdAsync(
             command.TripId,
             cancellationToken);
 
-        if (plan is null)
+        if (storedTrip is null)
         {
             return ValidateTripResult.Failure(["Trip not found."]);
         }
 
-        var issues = _tripPlanValidator.Validate(plan);
+        var issues = _tripPlanValidator.Validate(storedTrip.Plan, storedTrip.Command);
 
         return ValidateTripResult.Success(issues);
     }

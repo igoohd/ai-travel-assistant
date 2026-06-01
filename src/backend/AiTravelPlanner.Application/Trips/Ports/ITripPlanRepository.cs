@@ -11,7 +11,7 @@ public interface ITripPlanRepository
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken);
 
-    Task<Plan?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<StoredTrip?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Plan>> ListAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<StoredTrip>> ListAsync(CancellationToken cancellationToken);
 }

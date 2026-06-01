@@ -6,7 +6,7 @@ namespace AiTravelPlanner.Infrastructure.Persistence;
 
 public sealed class InMemoryTripPlanRepository : ITripPlanRepository
 {
-    private static readonly Dictionary<Guid, Plan> Plans = new();
+    private static readonly Dictionary<Guid, StoredTrip> Trips = new();
 
     public Task SaveAsync(
         Plan plan,
@@ -14,22 +14,22 @@ public sealed class InMemoryTripPlanRepository : ITripPlanRepository
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken)
     {
-        Plans[plan.Id] = plan;
+        Trips[plan.Id] = new StoredTrip(plan, command, validationIssues);
         return Task.CompletedTask;
     }
 
-    public Task<Plan?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<StoredTrip?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        Plans.TryGetValue(id, out var plan);
-        return Task.FromResult(plan);
+        Trips.TryGetValue(id, out var storedTrip);
+        return Task.FromResult(storedTrip);
     }
 
-    public Task<IReadOnlyList<Plan>> ListAsync(CancellationToken cancellationToken)
+    public Task<IReadOnlyList<StoredTrip>> ListAsync(CancellationToken cancellationToken)
     {
-        IReadOnlyList<Plan> plans = Plans.Values
-            .OrderByDescending(p => p.CreatedAt)
+        IReadOnlyList<StoredTrip> trips = Trips.Values
+            .OrderByDescending(st => st.Plan.CreatedAt)
             .ToArray();
 
-        return Task.FromResult(plans);
+        return Task.FromResult(trips);
     }
 }

@@ -58,8 +58,14 @@ public sealed class TripPlanValidatorTests
                 CreateActivity("Late afternoon"),
                 CreateActivity("Evening")
             ]);
+        var command = new GenerateTripCommand(
+            Destination: "Tokyo",
+            NumberOfDays: 3,
+            Budget: 1_000m,
+            Currency: "USD",
+            Interests: ["food"]);
 
-        var issues = validator.Validate(plan);
+        var issues = validator.Validate(plan, command);
 
         Assert.Contains(
             issues,
@@ -78,8 +84,14 @@ public sealed class TripPlanValidatorTests
                 CreateActivity("Activity 2", durationHours: 4),
                 CreateActivity("Activity 3", durationHours: 3)
             ]);
+        var command = new GenerateTripCommand(
+            Destination: "Tokyo",
+            NumberOfDays: 3,
+            Budget: 1_000m,
+            Currency: "USD",
+            Interests: ["food"]);
 
-        var issues = validator.Validate(plan);
+        var issues = validator.Validate(plan, command);
 
         Assert.Contains(
             issues,
@@ -99,7 +111,14 @@ public sealed class TripPlanValidatorTests
                 CreateActivity("Activity 3", transitMinutesFromPrevious: 1)
             ]);
 
-        var issues = validator.Validate(plan);
+        var command = new GenerateTripCommand(
+            Destination: "Tokyo",
+            NumberOfDays: 3,
+            Budget: 1_000m,
+            Currency: "USD",
+            Interests: ["food"]);
+
+        var issues = validator.Validate(plan, command);
 
         Assert.Contains(
             issues,

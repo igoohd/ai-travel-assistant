@@ -17,6 +17,6 @@ public sealed class ListTripsHandler : IListTripsUseCase
     {
         var trips = await _tripRepository.ListAsync(cancellationToken);
 
-        return new ListTripsResult(trips);
+        return new ListTripsResult(trips.Select(st => st.Plan).ToArray());
     }
 }

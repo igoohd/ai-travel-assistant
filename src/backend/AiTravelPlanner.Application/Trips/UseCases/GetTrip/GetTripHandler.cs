@@ -15,10 +15,10 @@ public sealed class GetTripHandler : IGetTripUseCase
         GetTripQuery query,
         CancellationToken cancellationToken)
     {
-        var plan = await _tripPlanRepository.GetByIdAsync(
+        var storedTrip = await _tripPlanRepository.GetByIdAsync(
             query.Id,
             cancellationToken);
 
-        return new GetTripResult(plan);
+        return new GetTripResult(storedTrip?.Plan);
     }
 }

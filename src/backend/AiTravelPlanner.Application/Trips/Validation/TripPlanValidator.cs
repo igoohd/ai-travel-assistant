@@ -5,7 +5,7 @@ namespace AiTravelPlanner.Application.Trips.Validation;
 
 public sealed class TripPlanValidator : ITripPlanValidator
 {
-    public IReadOnlyList<ValidationIssue> Validate(Plan plan)
+    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
     {
         var issues = new List<ValidationIssue>();
 
@@ -32,12 +32,6 @@ public sealed class TripPlanValidator : ITripPlanValidator
                 "One or more days has more than 3 hours of estimated transit time.",
                 ValidationSeverity.Warning));
         }
-
-        return issues;
-    }
-    public IReadOnlyList<ValidationIssue> Validate(Plan plan, GenerateTripCommand command)
-    {
-        var issues = Validate(plan).ToList();
 
         if (plan.Budget.Total > command.Budget)
         {
