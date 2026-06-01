@@ -61,7 +61,11 @@ export function TripResult({ trip }: TripResultProps) {
 
           <div>
             <dt className="font-medium text-slate-900">Retry Reasons</dt>
-            <dd>{trip.diagnostics.retryReasons.join(", ")}</dd>
+            <dd>
+              {trip.diagnostics.retryReasons.length > 0
+                ? trip.diagnostics.retryReasons.join(", ")
+                : "None"}
+            </dd>
           </div>
         </dl>
       </div>

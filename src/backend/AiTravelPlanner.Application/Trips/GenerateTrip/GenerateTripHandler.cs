@@ -109,6 +109,7 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
 
         if (validationIssues.Any(issue => issue.Code == ValidationIssueCodes.BudgetExceeded))
         {
+            retryReasons.Add(ValidationIssueCodes.BudgetExceeded);
             try
             {
                 plan = await _tripPlanGenerator.GenerateAsync(
@@ -128,7 +129,6 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             }
 
             retryCount++;
-            retryReasons.Add(ValidationIssueCodes.BudgetExceeded);
             validationIssues = _tripPlanValidator.Validate(plan, sanitizedCommand);
         }
 
