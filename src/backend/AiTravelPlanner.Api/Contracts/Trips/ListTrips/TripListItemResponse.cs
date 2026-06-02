@@ -8,5 +8,6 @@ public sealed record TripListItemResponse(
     decimal EstimatedTotal,
     string Currency,
     string BudgetCategory,
-    AiGenerationResponse AiMetadata,
-    int ValidationIssueCount);
+    int ValidationIssueCount,
+    AiGenerationResponse AiMetadata
+    );
