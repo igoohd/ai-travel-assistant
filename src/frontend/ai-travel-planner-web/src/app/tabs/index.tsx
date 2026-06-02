@@ -6,16 +6,24 @@ import { TripRequestForm } from "../trip-request-form";
 import { RecentTrips } from "../recent-trips";
 
 export function Tabs() {
+  const [recentTripsRefreshKey, setRecentTripsRefreshKey] = useState(0);
+
   const tabs: Tab[] = [
     {
       id: "generate",
       label: "Generate Trip",
-      content: <TripRequestForm />,
+      content: (
+        <TripRequestForm
+          onTripGenerated={() =>
+            setRecentTripsRefreshKey((currentKey) => currentKey + 1)
+          }
+        />
+      ),
     },
     {
       id: "recent",
       label: "Recent Trips",
-      content: <RecentTrips />,
+      content: <RecentTrips refreshKey={recentTripsRefreshKey} />,
     },
   ];
   const [selectedTabId, setSelectedTabId] = useState(tabs[0].id);

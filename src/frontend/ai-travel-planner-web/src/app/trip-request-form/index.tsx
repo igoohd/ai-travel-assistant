@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { TripRequestFormState } from "./types";
+import type { TripRequestFormProps, TripRequestFormState } from "./types";
 import { generateTrip } from "@/lib/api/tripsApi";
 import type { GenerateTripResponse } from "@/lib/api/tripTypes";
 import { toGenerateTripRequest, validateForm } from "./formHelpers";
 import { TripResult } from "../trip-result";
 
-export function TripRequestForm() {
+export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
   const [form, setForm] = useState<TripRequestFormState>({
     destination: "",
     numberOfDays: "5",
@@ -49,6 +49,7 @@ export function TripRequestForm() {
       const trip = await generateTrip(requestBody);
 
       setGeneratedTrip(trip);
+      onTripGenerated?.();
     } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);

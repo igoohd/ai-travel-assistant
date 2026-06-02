@@ -5,3 +5,7 @@ export type TripRequestFormState = {
   currency: string;
   interests: string;
 };
+
+export type TripRequestFormProps = {
+  onTripGenerated?: () => void;
+};
