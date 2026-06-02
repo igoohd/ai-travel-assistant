@@ -29,12 +29,12 @@ export function RecentTrips() {
   }
 
   function handleLoadTripsError(error: unknown) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-        return;
-      }
+    if (error instanceof Error) {
+      setErrorMessage(error.message);
+      return;
+    }
 
-      setErrorMessage("Something went wrong while loading trips.");
+    setErrorMessage("Something went wrong while loading trips.");
   }
 
   async function refreshTrips() {
@@ -106,6 +106,26 @@ export function RecentTrips() {
           (issue) => `${issue.severity}: ${issue.message}`,
         ),
       }));
+
+      setSelectedTrip((currentTrip) =>
+        currentTrip?.id === id
+          ? {
+              ...currentTrip,
+              validationIssues: response.validationIssues,
+            }
+          : currentTrip,
+      );
+
+      setTrips((currentTrips) =>
+        currentTrips.map((trip) =>
+          trip.id === id
+            ? {
+                ...trip,
+                validationIssueCount: response.validationIssues.length,
+              }
+            : trip,
+        ),
+      );
     } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
@@ -188,7 +208,7 @@ export function RecentTrips() {
               type="button"
               onClick={() => handleValidateTrip(trip.id)}
             >
-              {validatingTripId === trip.id ? "Validating..." : "Validate"}
+              {validatingTripId === trip.id ? "Revalidating..." : "Revalidate"}
             </button>
             {selectedTrip?.id === trip.id ? (
               <div className="mt-4">
