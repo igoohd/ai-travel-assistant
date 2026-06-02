@@ -91,9 +91,9 @@ public static class GenerateTripMapper
         return new GenerateTripResult(
             Plan: storedTrip.Plan,
             ValidationIssues: storedTrip.ValidationIssues,
-            RetryCount: 0,
-            RetryReasons: [],
-            DurationMs: 0,
+            RetryCount: storedTrip.RetryCount,
+            RetryReasons: storedTrip.RetryReasons,
+            DurationMs: storedTrip.DurationMs,
             Errors: [])
             .ToResponse();
     }

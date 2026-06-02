@@ -11,10 +11,13 @@ public sealed class InMemoryTripPlanRepository : ITripPlanRepository
     public Task SaveAsync(
         Plan plan,
         GenerateTripCommand command,
+        int retryCount,
+        IReadOnlyList<string> retryReasons,
+        int durationMs,
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken)
     {
-        Trips[plan.Id] = new StoredTrip(plan, command, validationIssues);
+        Trips[plan.Id] = new StoredTrip(plan, command, retryCount, retryReasons, durationMs, validationIssues);
         return Task.CompletedTask;
     }
 

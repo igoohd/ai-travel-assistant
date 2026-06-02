@@ -142,13 +142,17 @@ public sealed class GenerateTripHandler : IGenerateTripUseCase
             validationIssues = _tripPlanValidator.Validate(plan, sanitizedCommand);
         }
 
+        durationMs = (int)Math.Round((DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
+
         await _tripPlanRepository.SaveAsync(
             plan,
             sanitizedCommand,
+            retryCount,
+            retryReasons,
+            durationMs,
             validationIssues,
             cancellationToken);
 
-        durationMs = (int)Math.Round((DateTimeOffset.UtcNow - startedAt).TotalMilliseconds);
         _logger.LogInformation(
             "Generate trip completed. Destination: {Destination}. Days: {NumberOfDays}. Success: {Success}. RetryCount: {RetryCount}. DurationMs: {DurationMs}.",
             sanitizedCommand.Destination,

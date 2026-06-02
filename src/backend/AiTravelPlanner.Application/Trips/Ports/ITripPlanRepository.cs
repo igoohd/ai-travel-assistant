@@ -8,6 +8,9 @@ public interface ITripPlanRepository
     Task SaveAsync(
         Plan plan,
         GenerateTripCommand command,
+        int retryCount,
+        IReadOnlyList<string> retryReasons,
+        int durationMs,
         IReadOnlyList<ValidationIssue> validationIssues,
         CancellationToken cancellationToken);
 
