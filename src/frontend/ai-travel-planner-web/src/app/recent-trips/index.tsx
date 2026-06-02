@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { getTrip, listTrips, validateTrip } from "@/lib/api/tripsApi";
 import type {
   GenerateTripResponse,
   TripListItemResponse,
 } from "@/lib/api/tripTypes";
+import { useEffect, useState } from "react";
 import { TripResult } from "../trip-result";
 
 export function RecentTrips() {
@@ -22,21 +22,31 @@ export function RecentTrips() {
   const [hasLoadedTrips, setHasLoadedTrips] = useState(false);
   const [isRefreshingTrips, setIsRefreshingTrips] = useState(false);
 
-  async function refreshTrips() {
-    setIsRefreshingTrips(true);
+  async function fetchTrips() {
+    const response = await listTrips();
 
-    try {
-      const response = await listTrips();
+    return response.trips;
+  }
 
-      setErrorMessage(null);
-      setTrips(response.trips);
-    } catch (error) {
+  function handleLoadTripsError(error: unknown) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
         return;
       }
 
       setErrorMessage("Something went wrong while loading trips.");
+  }
+
+  async function refreshTrips() {
+    setIsRefreshingTrips(true);
+
+    try {
+      const loadedTrips = await fetchTrips();
+
+      setErrorMessage(null);
+      setTrips(loadedTrips);
+    } catch (error) {
+      handleLoadTripsError(error);
     } finally {
       setIsRefreshingTrips(false);
       setHasLoadedTrips(true);
@@ -44,19 +54,12 @@ export function RecentTrips() {
   }
 
   useEffect(() => {
-    listTrips()
-      .then((response) => {
+    fetchTrips()
+      .then((loadedTrips) => {
         setErrorMessage(null);
-        setTrips(response.trips);
+        setTrips(loadedTrips);
       })
-      .catch((error: unknown) => {
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-          return;
-        }
-
-        setErrorMessage("Something went wrong while loading trips.");
-      })
+      .catch(handleLoadTripsError)
       .finally(() => {
         setHasLoadedTrips(true);
       });
@@ -157,6 +160,18 @@ export function RecentTrips() {
             <p className="mt-1 text-sm text-slate-600">
               {trip.numberOfDays} days · {trip.currency} {trip.estimatedTotal} ·{" "}
               {trip.budgetCategory}
+            </p>
+
+            <p
+              className={
+                trip.validationIssueCount > 0
+                  ? "mt-2 text-sm font-medium text-amber-700"
+                  : "mt-2 text-sm text-emerald-700"
+              }
+            >
+              {trip.validationIssueCount > 0
+                ? `${trip.validationIssueCount} issue${trip.validationIssueCount === 1 ? "" : "s"} need review`
+                : "No validation issues"}
             </p>
 
             <button

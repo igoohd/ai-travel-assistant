@@ -90,6 +90,7 @@ export type TripListItemResponse = {
   estimatedTotal: number;
   currency: string;
   budgetCategory: string;
+  validationIssueCount: number;
   aiMetadata: AiGenerationResponse;
 };
 

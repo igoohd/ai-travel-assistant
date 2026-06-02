@@ -10,4 +10,4 @@ public sealed record TripListItemResponse(
     string BudgetCategory,
     int ValidationIssueCount,
     AiGenerationResponse AiMetadata
-    );
+);
