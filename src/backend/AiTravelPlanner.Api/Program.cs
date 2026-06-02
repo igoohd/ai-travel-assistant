@@ -1,3 +1,4 @@
+using System.ClientModel;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.Sanitization;
@@ -7,9 +8,14 @@ using AiTravelPlanner.Application.Trips.UseCases.ListTrips;
 using AiTravelPlanner.Application.Trips.UseCases.ValidateTrip;
 using AiTravelPlanner.Application.Trips.Validation;
 using AiTravelPlanner.Infrastructure.Ai;
+using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
+using OpenAI;
+using OpenAI.Chat;
 
 const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
@@ -40,6 +46,10 @@ if (aiProviderOptions.ActiveProvider.Equals("GitHubModels", StringComparison.Ord
 {
     builder.Services.AddScoped<ITripPlanGenerator, GitHubModelsTripPlanGenerator>();
 }
+else if (aiProviderOptions.ActiveProvider.Equals("ExtensionsAi", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddScoped<ITripPlanGenerator, ExtensionsAiTripPlanGenerator>();
+}
 else
 {
     builder.Services.AddScoped<ITripPlanGenerator, StubTripPlanGenerator>();
@@ -60,6 +70,22 @@ builder.Services
     .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "GitHub Models temperature must be between 0 and 1.");
 builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
 
+builder.Services.AddSingleton<IChatClient>(serviceProvider =>
+{
+    var options = serviceProvider
+        .GetRequiredService<IOptions<GitHubModelsOptions>>()
+        .Value;
+
+    var chatClient = new ChatClient(
+        model: options.Model,
+        credential: new ApiKeyCredential(options.Token),
+        options: new OpenAIClientOptions
+        {
+            Endpoint = new Uri(options.Endpoint)
+        });
+
+    return chatClient.AsIChatClient();
+});
 builder.Services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 builder.Services.AddSingleton<ITripInputSanitizer, TripInputSanitizer>();
 builder.Services.AddSingleton<ITripGenerationPromptBuilder, TripGenerationPromptBuilder>();
