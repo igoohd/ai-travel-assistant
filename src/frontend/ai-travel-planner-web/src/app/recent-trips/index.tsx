@@ -7,9 +7,8 @@ import type {
 } from "@/lib/api/tripTypes";
 import { useEffect, useState } from "react";
 import { TripResult } from "../trip-result";
-import { RecentTripsProps } from "./types";
 
-export function RecentTrips({ refreshKey }: RecentTripsProps) {
+export function RecentTrips() {
   const [trips, setTrips] = useState<TripListItemResponse[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedTrip, setSelectedTrip] = useState<GenerateTripResponse | null>(
@@ -64,7 +63,7 @@ export function RecentTrips({ refreshKey }: RecentTripsProps) {
       .finally(() => {
         setHasLoadedTrips(true);
       });
-  }, [refreshKey]);
+  }, []);
 
   async function handleOpenTrip(id: string) {
     if (selectedTrip?.id === id) {
@@ -111,9 +110,9 @@ export function RecentTrips({ refreshKey }: RecentTripsProps) {
       setSelectedTrip((currentTrip) =>
         currentTrip?.id === id
           ? {
-            ...currentTrip,
-            validationIssues: response.validationIssues,
-          }
+              ...currentTrip,
+              validationIssues: response.validationIssues,
+            }
           : currentTrip,
       );
 

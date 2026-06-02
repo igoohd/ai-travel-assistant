@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import type { TripRequestFormProps, TripRequestFormState } from "./types";
 import { generateTrip } from "@/lib/api/tripsApi";
-import type { GenerateTripResponse } from "@/lib/api/tripTypes";
+import { useState } from "react";
 import { toGenerateTripRequest, validateForm } from "./formHelpers";
-import { TripResult } from "../trip-result";
+import type { TripRequestFormProps, TripRequestFormState } from "./types";
 
 export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
   const [form, setForm] = useState<TripRequestFormState>({
@@ -17,8 +15,6 @@ export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [generatedTrip, setGeneratedTrip] =
-    useState<GenerateTripResponse | null>(null);
 
   function updateField(field: keyof TripRequestFormState, value: string) {
     setForm((currentForm) => ({
@@ -33,7 +29,6 @@ export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
     event.preventDefault();
 
     setErrorMessage(null);
-    setGeneratedTrip(null);
 
     const validationErrors = validateForm(form);
 
@@ -46,9 +41,8 @@ export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
 
     try {
       const requestBody = toGenerateTripRequest(form);
-      const trip = await generateTrip(requestBody);
+      await generateTrip(requestBody);
 
-      setGeneratedTrip(trip);
       onTripGenerated?.();
     } catch (error) {
       if (error instanceof Error) {
@@ -134,7 +128,6 @@ export function TripRequestForm({ onTripGenerated }: TripRequestFormProps) {
           {errorMessage}
         </p>
       ) : null}
-      {generatedTrip ? <TripResult trip={generatedTrip} /> : null}
     </section>
   );
 }
