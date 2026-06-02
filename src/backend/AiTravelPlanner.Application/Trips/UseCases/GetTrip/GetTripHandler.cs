@@ -19,6 +19,6 @@ public sealed class GetTripHandler : IGetTripUseCase
             query.Id,
             cancellationToken);
 
-        return new GetTripResult(storedTrip?.Plan);
+        return new GetTripResult(storedTrip);
     }
 }

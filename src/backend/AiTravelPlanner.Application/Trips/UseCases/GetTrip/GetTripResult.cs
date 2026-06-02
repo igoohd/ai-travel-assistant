@@ -1,8 +1,8 @@
-using AiTravelPlanner.Domain.Trips;
+using AiTravelPlanner.Application.Trips.Ports;
 
 namespace AiTravelPlanner.Application.Trips.UseCases.GetTrip;
 
-public sealed record GetTripResult(Plan? Plan)
+public sealed record GetTripResult(StoredTrip? Trip)
 {
-    public bool IsFound => Plan is not null;
+    public bool IsFound => Trip is not null;
 }

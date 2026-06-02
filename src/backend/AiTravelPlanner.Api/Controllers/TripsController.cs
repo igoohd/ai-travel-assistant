@@ -67,7 +67,7 @@ public sealed class TripsController : ControllerBase
             ]));
         }
 
-        return Ok(result.Plan!.ToResponse());
+        return Ok(result.ToResponse());
     }
 
     [HttpGet]

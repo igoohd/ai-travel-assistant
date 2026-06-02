@@ -1,5 +1,5 @@
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
-using AiTravelPlanner.Domain.Trips;
+using AiTravelPlanner.Application.Trips.UseCases.GetTrip;
 
 namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
 
@@ -83,11 +83,14 @@ public static class GenerateTripMapper
         );
     }
 
-    public static GenerateTripResponse ToResponse(this Plan tripPlan)
+    public static GenerateTripResponse ToResponse(this GetTripResult result)
     {
+        var storedTrip = result.Trip
+            ?? throw new InvalidOperationException("Cannot map a missing trip to a response.");
+
         return new GenerateTripResult(
-            Plan: tripPlan,
-            ValidationIssues: [],
+            Plan: storedTrip.Plan,
+            ValidationIssues: storedTrip.ValidationIssues,
             RetryCount: 0,
             RetryReasons: [],
             DurationMs: 0,
