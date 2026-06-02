@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+set -eu
+
+backend_dir="src/backend"
+solution_file="AiTravelPlanner.sln"
+
+if [ ! -f "$backend_dir/$solution_file" ]; then
+    echo "Backend solution not found at $backend_dir/$solution_file."
+    exit 1
+fi
+
+echo "Cleaning C# unused imports before commit..."
+
+before_format="$(mktemp)"
+after_format="$(mktemp)"
+trap 'rm -f "$before_format" "$after_format"' EXIT
+
+git diff -- src/backend > "$before_format"
+
+cd "$backend_dir"
+dotnet format "$solution_file" style --diagnostics IDE0005 --no-restore --verbosity quiet
+
+cd ../..
+git diff -- src/backend > "$after_format"
+
+if ! cmp -s "$before_format" "$after_format"; then
+    echo "C# import cleanup changed files."
+    echo "Review and stage the formatter changes, then commit again."
+    exit 1
+fi
+
+echo "C# unused imports are clean."
