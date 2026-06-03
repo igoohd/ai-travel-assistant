@@ -70,10 +70,16 @@ builder.Services
     .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "GitHub Models temperature must be between 0 and 1.");
 builder.Services.AddHttpClient<IGitHubModelsClient, GitHubModelsClient>();
 
+builder.Services.AddOptions<ExtensionsAiOptions>()
+    .Bind(builder.Configuration.GetSection(ExtensionsAiOptions.SectionName))
+    .Validate(options => !string.IsNullOrWhiteSpace(options.Endpoint), "Extensions AI endpoint is required.")
+    .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "Extensions AI model is required.")
+    .Validate(options => options.MaxTokens > 0, "Extensions AI max tokens must be greater than zero.")
+    .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "Extensions AI temperature must be between 0 and 1.");
 builder.Services.AddSingleton<IChatClient>(serviceProvider =>
 {
     var options = serviceProvider
-        .GetRequiredService<IOptions<GitHubModelsOptions>>()
+        .GetRequiredService<IOptions<ExtensionsAiOptions>>()
         .Value;
 
     var chatClient = new ChatClient(
