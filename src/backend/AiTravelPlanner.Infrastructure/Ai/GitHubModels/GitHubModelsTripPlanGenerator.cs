@@ -3,6 +3,7 @@ using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
+using AiTravelPlanner.Infrastructure.Ai.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

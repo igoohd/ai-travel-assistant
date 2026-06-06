@@ -1,4 +1,4 @@
-namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
+namespace AiTravelPlanner.Infrastructure.Ai.Models;
 
 public sealed record GeneratedTripPlan(
     string Overview,
