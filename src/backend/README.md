@@ -38,7 +38,10 @@ Infrastructure provides concrete implementations for application ports:
 
 ```text
 Infrastructure/Ai/GitHubModels
-  -> real AI provider adapter
+  -> raw GitHub Models HTTP adapter
+
+Infrastructure/Ai/ExtensionsAi
+  -> Microsoft.Extensions.AI adapter using IChatClient
 
 Infrastructure/Ai/Stub
   -> deterministic local fallback generator
@@ -64,8 +67,9 @@ POST /api/trips/generate
   -> GenerateTripCommand
   -> GenerateTripHandler
   -> ITripPlanGenerator
-  -> GitHubModelsTripPlanGenerator or StubTripPlanGenerator
-  -> IGitHubModelsClient when GitHub Models is active
+  -> GitHubModelsTripPlanGenerator, ExtensionsAiTripPlanGenerator, or StubTripPlanGenerator
+  -> IGitHubModelsClient when raw GitHub Models is active
+  -> IChatClient when Extensions.AI is active
   -> ITripPlanValidator
   -> ITripPlanRepository
   -> Plan
@@ -80,7 +84,19 @@ The current trip generator is selected by configuration:
 AiProviders:ActiveProvider
 ```
 
-Set it to `GitHubModels` to use `GitHubModelsTripPlanGenerator`, or any other value to fall back to `StubTripPlanGenerator`.
+Supported values:
+
+```text
+GitHubModels
+ExtensionsAi
+Stub
+```
+
+Set it to `GitHubModels` to use the raw GitHub Models HTTP integration.
+
+Set it to `ExtensionsAi` to use Microsoft.Extensions.AI through `IChatClient` and an OpenAI-compatible adapter pointed at GitHub Models.
+
+Any other value falls back to `StubTripPlanGenerator`.
 
 `StubTripPlanGenerator` uses deterministic placeholder logic. This keeps local development simple while preserving a clean fallback when a real AI provider is not configured.
 
@@ -103,3 +119,21 @@ dotnet user-secrets set "AiProviders:GitHubModels:Token" "YOUR_GITHUB_TOKEN" --p
 The token needs permission to use GitHub Models. For a fine-grained personal access token, GitHub's REST API docs describe the required scope as `models: read`.
 
 When `AiProviders:ActiveProvider` is `GitHubModels`, the app calls GitHub Models through `GitHubModelsTripPlanGenerator`.
+
+## Extensions.AI Setup
+
+Extensions.AI configuration lives under:
+
+```text
+AiProviders:ExtensionsAi
+```
+
+This provider uses `Microsoft.Extensions.AI.IChatClient` with the OpenAI-compatible adapter. GitHub Models still hosts the model, but the application talks to it through the .NET-native `IChatClient` abstraction.
+
+The Extensions.AI token is also stored with user-secrets:
+
+```bash
+dotnet user-secrets set "AiProviders:ExtensionsAi:Token" "YOUR_GITHUB_TOKEN" --project src/backend/AiTravelPlanner.Api
+```
+
+When `AiProviders:ActiveProvider` is `ExtensionsAi`, the app calls GitHub Models through `ExtensionsAiTripPlanGenerator`.

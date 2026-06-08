@@ -295,11 +295,11 @@ The raw LLM integration currently tracks:
 
 ---
 
-# Phase 2 - Introduce LangChain
+# Phase 2 - Introduce .NET Native AI Abstractions
 
 ## Goal
 
-Understand reusable AI abstractions.
+Understand reusable AI abstractions in the .NET ecosystem.
 
 ---
 
@@ -307,18 +307,39 @@ Understand reusable AI abstractions.
 
 Introduce:
 
-* PromptTemplates
-* Chains
+* Microsoft.Extensions.AI
+* IChatClient
+* provider-neutral chat model access
 * structured outputs
-* reusable prompt pipelines
+* reusable provider adapters
+
+---
+
+## Implemented Checkpoint
+
+The application now supports an alternative trip generation path using Microsoft.Extensions.AI.
+
+Current generation paths:
+
+* raw GitHub Models HTTP integration
+* Microsoft.Extensions.AI through IChatClient and an OpenAI-compatible adapter
+* deterministic stub generator for local fallback
+
+This demonstrated the difference between:
+
+* application-specific abstraction: ITripPlanGenerator
+* .NET ecosystem abstraction: IChatClient
+* provider-specific implementation: GitHub Models / OpenAI-compatible client
 
 ---
 
 ## Example Chains
 
-* DestinationResearchChain
-* BudgetCalculationChain
-* ItineraryGenerationChain
+Future reusable AI components may include:
+
+* DestinationResearchService
+* BudgetEstimationService
+* ItineraryGenerationService
 
 ---
 
@@ -329,7 +350,7 @@ Frontend
    v
 AI Service
    v
-LangChain
+.NET AI Abstraction
    v
 Provider SDK
 ```
