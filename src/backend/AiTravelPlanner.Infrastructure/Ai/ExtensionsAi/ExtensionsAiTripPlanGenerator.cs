@@ -38,10 +38,16 @@ public sealed class ExtensionsAiTripPlanGenerator : ITripPlanGenerator
         var aiMetadata = new AiGenerationMetadata(
             Provider: "ExtensionsAI",
             Model: _options.Model,
-            PromptTokens: null,
-            CompletionTokens: null,
-            TotalTokens: null);
+            PromptTokens: ToInt(response.Usage?.InputTokenCount),
+            CompletionTokens: ToInt(response.Usage?.OutputTokenCount),
+            TotalTokens: ToInt(response.Usage?.TotalTokenCount)
+        );
 
         return generatedPlan.ToPlan(command, aiMetadata);
+    }
+
+    private static int? ToInt(long? value)
+    {
+        return value is null ? null : checked((int)value.Value);
     }
 }
