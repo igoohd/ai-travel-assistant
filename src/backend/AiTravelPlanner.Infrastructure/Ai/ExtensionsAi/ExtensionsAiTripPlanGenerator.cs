@@ -1,10 +1,10 @@
-using System.Text.Json;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 using AiTravelPlanner.Infrastructure.Ai.Models;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
 
 namespace AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 
@@ -12,11 +12,13 @@ public sealed class ExtensionsAiTripPlanGenerator : ITripPlanGenerator
 {
     private readonly IChatClient _chatClient;
     private readonly ITripGenerationPromptBuilder _promptBuilder;
+    private readonly ExtensionsAiOptions _options;
 
-    public ExtensionsAiTripPlanGenerator(IChatClient chatClient, ITripGenerationPromptBuilder promptBuilder)
+    public ExtensionsAiTripPlanGenerator(IChatClient chatClient, ITripGenerationPromptBuilder promptBuilder, IOptions<ExtensionsAiOptions> options)
     {
         _chatClient = chatClient;
         _promptBuilder = promptBuilder;
+        _options = options.Value;
     }
 
     public async Task<Plan> GenerateAsync(GenerateTripCommand command, CancellationToken cancellationToken, string? additionalInstruction = null)
@@ -31,31 +33,15 @@ public sealed class ExtensionsAiTripPlanGenerator : ITripPlanGenerator
             ],
             cancellationToken: cancellationToken);
 
-        GeneratedTripPlan? generatedPlan;
+        var generatedPlan = GeneratedTripPlanParser.Parse(response.Text, "ExtensionsAI");
 
-        try
-        {
-            generatedPlan = JsonSerializer.Deserialize<GeneratedTripPlan>(
-                response.Text,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-        }
-        catch (JsonException exception)
-        {
-            throw new InvalidOperationException(
-                "Extensions AI returned a response that could not be parsed as a trip plan JSON object.",
-                exception);
-        }
+        var aiMetadata = new AiGenerationMetadata(
+            Provider: "ExtensionsAI",
+            Model: _options.Model,
+            PromptTokens: null,
+            CompletionTokens: null,
+            TotalTokens: null);
 
-        if (generatedPlan is null)
-        {
-            throw new InvalidOperationException(
-                "Extensions AI returned an invalid trip plan.");
-        }
-
-        throw new NotImplementedException(
-            $"Extensions AI returned: {response.Text}");
+        return generatedPlan.ToPlan(command, aiMetadata);
     }
 }

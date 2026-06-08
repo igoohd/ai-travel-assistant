@@ -79,7 +79,8 @@ public static class DependencyInjection
             .Validate(options => !string.IsNullOrWhiteSpace(options.Endpoint), "Extensions AI endpoint is required.")
             .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "Extensions AI model is required.")
             .Validate(options => options.MaxTokens > 0, "Extensions AI max tokens must be greater than zero.")
-            .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "Extensions AI temperature must be between 0 and 1.");
+            .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "Extensions AI temperature must be between 0 and 1.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Token), "Extensions AI token is required.");
 
         services.AddSingleton<IChatClient>(serviceProvider =>
         {
