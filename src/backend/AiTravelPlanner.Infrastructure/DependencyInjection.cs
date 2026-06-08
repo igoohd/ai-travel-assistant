@@ -3,12 +3,14 @@ using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
+using AiTravelPlanner.Infrastructure.Ai.SemanticKernel;
 using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using OpenAI;
 using OpenAI.Chat;
 
@@ -23,6 +25,7 @@ public static class DependencyInjection
         services.AddTripPlanGenerator(configuration);
         services.AddGitHubModels(configuration);
         services.AddExtensionsAi(configuration);
+        services.AddSemanticKernel();
         services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 
         return services;
@@ -43,6 +46,10 @@ public static class DependencyInjection
         else if (aiProviderOptions.ActiveProvider.Equals("ExtensionsAi", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<ITripPlanGenerator, ExtensionsAiTripPlanGenerator>();
+        }
+        else if (aiProviderOptions.ActiveProvider.Equals("SemanticKernel", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddScoped<ITripPlanGenerator, SemanticKernelTripPlanGenerator>();
         }
         else
         {
@@ -97,6 +104,21 @@ public static class DependencyInjection
                 });
 
             return chatClient.AsIChatClient();
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddSemanticKernel(this IServiceCollection services)
+    {
+        services.AddSingleton<Kernel>(serviceProvider =>
+        {
+            var chatClient = serviceProvider.GetRequiredService<IChatClient>();
+            var kernelBuilder = Kernel.CreateBuilder();
+
+            kernelBuilder.Services.AddSingleton(chatClient);
+
+            return kernelBuilder.Build();
         });
 
         return services;
