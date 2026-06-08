@@ -37,7 +37,7 @@ public sealed class ExtensionsAiTripPlanGenerator : ITripPlanGenerator
 
         var aiMetadata = new AiGenerationMetadata(
             Provider: "ExtensionsAI",
-            Model: _options.Model,
+            Model: response.ModelId ?? _options.Model,
             PromptTokens: ToInt(response.Usage?.InputTokenCount),
             CompletionTokens: ToInt(response.Usage?.OutputTokenCount),
             TotalTokens: ToInt(response.Usage?.TotalTokenCount)
