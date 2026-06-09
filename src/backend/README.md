@@ -120,20 +120,20 @@ The token needs permission to use GitHub Models. For a fine-grained personal acc
 
 When `AiProviders:ActiveProvider` is `GitHubModels`, the app calls GitHub Models through `GitHubModelsTripPlanGenerator`.
 
-## Extensions.AI Setup
+## Shared AI Chat Client Setup
 
-Extensions.AI configuration lives under:
+The shared `IChatClient` configuration lives under:
 
 ```text
-AiProviders:ExtensionsAi
+AiProviders:ChatClient
 ```
 
-This provider uses `Microsoft.Extensions.AI.IChatClient` with the OpenAI-compatible adapter. GitHub Models still hosts the model, but the application talks to it through the .NET-native `IChatClient` abstraction.
+The client uses `Microsoft.Extensions.AI.IChatClient` with the OpenAI-compatible adapter. GitHub Models hosts the model. Both `ExtensionsAiTripPlanGenerator` and `SemanticKernelTripPlanGenerator` use this client.
 
-The Extensions.AI token is also stored with user-secrets:
+Store the chat client token with user-secrets:
 
 ```bash
-dotnet user-secrets set "AiProviders:ExtensionsAi:Token" "YOUR_GITHUB_TOKEN" --project src/backend/AiTravelPlanner.Api
+dotnet user-secrets set "AiProviders:ChatClient:Token" "YOUR_GITHUB_TOKEN" --project src/backend/AiTravelPlanner.Api
 ```
 
 When `AiProviders:ActiveProvider` is `ExtensionsAi`, the app calls GitHub Models through `ExtensionsAiTripPlanGenerator`.

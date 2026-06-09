@@ -2,6 +2,7 @@ using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
+using AiTravelPlanner.Infrastructure.Ai.Chat;
 using AiTravelPlanner.Infrastructure.Ai.Models;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
@@ -12,9 +13,9 @@ public sealed class ExtensionsAiTripPlanGenerator : ITripPlanGenerator
 {
     private readonly IChatClient _chatClient;
     private readonly ITripGenerationPromptBuilder _promptBuilder;
-    private readonly ExtensionsAiOptions _options;
+    private readonly GitHubModelsChatOptions _options;
 
-    public ExtensionsAiTripPlanGenerator(IChatClient chatClient, ITripGenerationPromptBuilder promptBuilder, IOptions<ExtensionsAiOptions> options)
+    public ExtensionsAiTripPlanGenerator(IChatClient chatClient, ITripGenerationPromptBuilder promptBuilder, IOptions<GitHubModelsChatOptions> options)
     {
         _chatClient = chatClient;
         _promptBuilder = promptBuilder;

@@ -1,6 +1,7 @@
 using System.ClientModel;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Infrastructure.Ai;
+using AiTravelPlanner.Infrastructure.Ai.Chat;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 using AiTravelPlanner.Infrastructure.Ai.SemanticKernel;
@@ -25,10 +26,10 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddTripPlanGenerator(configuration);
         services.AddGitHubModels(configuration);
-        services.AddExtensionsAi(configuration);
+        services.AddAiChatClient(configuration);
         services.AddSemanticKernel();
+        services.AddTripPlanGenerator(configuration);
         services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 
         return services;
@@ -79,23 +80,23 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddExtensionsAi(
+    private static IServiceCollection AddAiChatClient(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services
-            .AddOptions<ExtensionsAiOptions>()
-            .Bind(configuration.GetSection(ExtensionsAiOptions.SectionName))
-            .Validate(options => !string.IsNullOrWhiteSpace(options.Endpoint), "Extensions AI endpoint is required.")
-            .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "Extensions AI model is required.")
-            .Validate(options => options.MaxTokens > 0, "Extensions AI max tokens must be greater than zero.")
-            .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "Extensions AI temperature must be between 0 and 1.")
-            .Validate(options => !string.IsNullOrWhiteSpace(options.Token), "Extensions AI token is required.");
+            .AddOptions<GitHubModelsChatOptions>()
+            .Bind(configuration.GetSection(GitHubModelsChatOptions.SectionName))
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Endpoint), "Chat client endpoint is required.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Model), "Chat client model is required.")
+            .Validate(options => options.MaxTokens > 0, "Chat client max tokens must be greater than zero.")
+            .Validate(options => options.Temperature >= 0 && options.Temperature <= 1, "Chat client temperature must be between 0 and 1.")
+            .Validate(options => !string.IsNullOrWhiteSpace(options.Token), "Chat client token is required.");
 
         services.AddSingleton<IChatClient>(serviceProvider =>
         {
             var options = serviceProvider
-                .GetRequiredService<IOptions<ExtensionsAiOptions>>()
+                .GetRequiredService<IOptions<GitHubModelsChatOptions>>()
                 .Value;
 
             var chatClient = new ChatClient(

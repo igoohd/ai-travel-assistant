@@ -1,8 +1,8 @@
-namespace AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
+namespace AiTravelPlanner.Infrastructure.Ai.Chat;
 
-public sealed class ExtensionsAiOptions
+public sealed class GitHubModelsChatOptions
 {
-    public const string SectionName = "AiProviders:ExtensionsAi";
+    public const string SectionName = "AiProviders:ChatClient";
 
     public string Endpoint { get; init; } = "https://models.github.ai/inference/";
 
