@@ -106,7 +106,13 @@ public static class DependencyInjection
                     Endpoint = new Uri(options.Endpoint)
                 });
 
-            return chatClient.AsIChatClient();
+            var innerClient = chatClient.AsIChatClient();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+            return innerClient
+                .AsBuilder()
+                .UseKernelFunctionInvocation(loggerFactory)
+                .Build(serviceProvider);
         });
 
         return services;
