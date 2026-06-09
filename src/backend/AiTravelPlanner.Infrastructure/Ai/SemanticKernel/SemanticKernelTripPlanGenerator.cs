@@ -22,7 +22,7 @@ public sealed class SemanticKernelTripPlanGenerator : ITripPlanGenerator
     User request:
     {{$userPrompt}}
 
-    Average daily budget: {{$dailyBudget}} {{$currency}}
+    Use the available tools when useful for exact calculations
     """;
 
     private readonly KernelFunction _generateTripFunction;
@@ -36,7 +36,8 @@ public sealed class SemanticKernelTripPlanGenerator : ITripPlanGenerator
         var executionSettings = new OpenAIPromptExecutionSettings
         {
             Temperature = (double)_options.Temperature,
-            MaxTokens = _options.MaxTokens
+            MaxTokens = _options.MaxTokens,
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
         };
 
         _generateTripFunction = _kernel.CreateFunctionFromPrompt(
@@ -50,24 +51,10 @@ public sealed class SemanticKernelTripPlanGenerator : ITripPlanGenerator
         var systemPrompt = _promptBuilder.BuildSystemPrompt();
         var userPrompt = _promptBuilder.Build(command, additionalInstruction);
 
-        var budgetResult = await _kernel.InvokeAsync(
-        "TripPlanning",
-        "calculate_daily_budget",
-        new KernelArguments
-        {
-            ["totalBudget"] = command.Budget,
-            ["numberOfDays"] = command.NumberOfDays
-        },
-        cancellationToken);
-
-        var dailyBudget = budgetResult.GetValue<decimal>();
-
         var arguments = new KernelArguments
         {
             ["systemPrompt"] = systemPrompt,
-            ["userPrompt"] = userPrompt,
-            ["dailyBudget"] = dailyBudget,
-            ["currency"] = command.Currency
+            ["userPrompt"] = userPrompt
         };
 
         var result = await _kernel.InvokeAsync(
