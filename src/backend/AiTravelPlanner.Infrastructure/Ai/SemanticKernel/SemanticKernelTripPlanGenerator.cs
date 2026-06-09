@@ -4,6 +4,7 @@ using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.Models;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -37,6 +38,7 @@ public sealed class SemanticKernelTripPlanGenerator : ITripPlanGenerator
         {
             Temperature = (double)_options.Temperature,
             MaxTokens = _options.MaxTokens,
+            ResponseFormat = "json_object",
             FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
         };
 
@@ -62,15 +64,24 @@ public sealed class SemanticKernelTripPlanGenerator : ITripPlanGenerator
             arguments,
             cancellationToken: cancellationToken);
 
+        var chatResponse = result.GetValue<ChatResponse>() ?? throw new InvalidOperationException("Semantic Kernel returned no chat response.");
 
-        var generatedPlan = GeneratedTripPlanParser.Parse(result.ToString(), "SemanticKernel");
+        var generatedPlan = GeneratedTripPlanParser.Parse(chatResponse.Text, "SemanticKernel");
+
         var aiMetadata = new AiGenerationMetadata(
             Provider: "SemanticKernel",
-            Model: _options.Model,
-            PromptTokens: null,
-            CompletionTokens: null,
-            TotalTokens: null);
+            Model: chatResponse.ModelId ?? _options.Model,
+            PromptTokens: ToInt(chatResponse.Usage?.InputTokenCount),
+            CompletionTokens: ToInt(chatResponse.Usage?.OutputTokenCount),
+            TotalTokens: ToInt(chatResponse.Usage?.TotalTokenCount));
 
         return generatedPlan.ToPlan(command, aiMetadata);
+    }
+
+    private static int? ToInt(long? value)
+    {
+        return value is null
+            ? null
+            : checked((int)value.Value);
     }
 }
