@@ -4,6 +4,7 @@ using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 using AiTravelPlanner.Infrastructure.Ai.SemanticKernel;
+using AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Plugins;
 using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
 using Microsoft.Extensions.AI;
@@ -117,6 +118,8 @@ public static class DependencyInjection
             var kernelBuilder = Kernel.CreateBuilder();
 
             kernelBuilder.Services.AddSingleton(chatClient);
+
+            kernelBuilder.Plugins.AddFromType<TripPlanningPlugin>("TripPlanning");
 
             return kernelBuilder.Build();
         });
