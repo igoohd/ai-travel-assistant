@@ -4,12 +4,14 @@ using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
 using AiTravelPlanner.Infrastructure.Ai.SemanticKernel;
+using AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Filters;
 using AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Plugins;
 using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using OpenAI;
@@ -121,7 +123,13 @@ public static class DependencyInjection
 
             kernelBuilder.Plugins.AddFromType<TripPlanningPlugin>("TripPlanning");
 
-            return kernelBuilder.Build();
+            var kernel = kernelBuilder.Build();
+
+            kernel.AutoFunctionInvocationFilters.Add(new AutoFunctionLoggingFilter(
+                serviceProvider.GetRequiredService<ILogger<AutoFunctionLoggingFilter>>()
+            ));
+
+            return kernel;
         });
 
         return services;
