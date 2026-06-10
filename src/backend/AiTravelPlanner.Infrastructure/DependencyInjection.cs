@@ -1,6 +1,7 @@
 using System.ClientModel;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Infrastructure.Ai;
+using AiTravelPlanner.Infrastructure.Ai.AgentFramework;
 using AiTravelPlanner.Infrastructure.Ai.Chat;
 using AiTravelPlanner.Infrastructure.Ai.ExtensionsAi;
 using AiTravelPlanner.Infrastructure.Ai.GitHubModels;
@@ -9,6 +10,7 @@ using AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Filters;
 using AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Plugins;
 using AiTravelPlanner.Infrastructure.Ai.Stub;
 using AiTravelPlanner.Infrastructure.Persistence;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,7 @@ public static class DependencyInjection
         services.AddGitHubModels(configuration);
         services.AddAiChatClient(configuration);
         services.AddSemanticKernel();
+        services.AddAgentFramework();
         services.AddTripPlanGenerator(configuration);
         services.AddSingleton<ITripPlanRepository, InMemoryTripPlanRepository>();
 
@@ -54,6 +57,10 @@ public static class DependencyInjection
         else if (aiProviderOptions.ActiveProvider.Equals("SemanticKernel", StringComparison.OrdinalIgnoreCase))
         {
             services.AddScoped<ITripPlanGenerator, SemanticKernelTripPlanGenerator>();
+        }
+        else if (aiProviderOptions.ActiveProvider.Equals("AgentFramework", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddScoped<ITripPlanGenerator, AgentFrameworkTripPlanGenerator>();
         }
         else
         {
@@ -137,6 +144,29 @@ public static class DependencyInjection
             ));
 
             return kernel;
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddAgentFramework(
+    this IServiceCollection services)
+    {
+        services.AddSingleton<AIAgent>(serviceProvider =>
+        {
+            var chatClient =
+                serviceProvider.GetRequiredService<IChatClient>();
+
+            var loggerFactory =
+                serviceProvider.GetRequiredService<ILoggerFactory>();
+
+            return chatClient.AsAIAgent(
+                name: "TravelPlanner",
+                description: "Creates structured travel itineraries.",
+                instructions:
+                    "You are an AI travel planner. Create practical itineraries that respect the user's destination, duration, interests, budget, and currency.",
+                loggerFactory: loggerFactory,
+                services: serviceProvider);
         });
 
         return services;
