@@ -1,4 +1,5 @@
 using System.ClientModel;
+using AiTravelPlanner.Application.Trips.Planning;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Infrastructure.Ai;
 using AiTravelPlanner.Infrastructure.Ai.AgentFramework;
@@ -135,7 +136,11 @@ public static class DependencyInjection
 
             kernelBuilder.Services.AddSingleton(chatClient);
 
-            kernelBuilder.Plugins.AddFromType<TripPlanningPlugin>("TripPlanning");
+            var dailyBudgetCalculator = serviceProvider.GetRequiredService<DailyBudgetCalculator>();
+
+            kernelBuilder.Plugins.AddFromObject(
+                new TripPlanningPlugin(dailyBudgetCalculator),
+                "TripPlanning");
 
             var kernel = kernelBuilder.Build();
 
@@ -160,16 +165,27 @@ public static class DependencyInjection
             var loggerFactory =
                 serviceProvider.GetRequiredService<ILoggerFactory>();
 
+            var logger = loggerFactory.CreateLogger("AgentFrameworkTools");
 
             var calculateDailyBudget = AIFunctionFactory.Create(
-                (decimal totalBudget, int numberOfDays) => decimal.Round(totalBudget / numberOfDays, 2),
+                (decimal totalBudget, int numberOfDays) =>
+                {
+                    logger.LogInformation(
+                        "Daily budget tool called: {Budget} / {Days}",
+                        totalBudget,
+                        numberOfDays);
+
+                    var dailyBudgetCalculator = serviceProvider.GetRequiredService<DailyBudgetCalculator>();
+
+                    return dailyBudgetCalculator.Calculate(totalBudget, numberOfDays);
+                },
                 name: "calculate_daily_budget",
                 description: "Calculates the available daily budget.");
 
             return chatClient.AsAIAgent(
                 name: "TravelPlanner",
                 description: "Creates structured travel itineraries.",
-                instructions: "You are an AI travel planner. Always use the calculate_daily_budget tool before creating the itinerary.",
+                instructions: "You are an AI travel planner. Create practical itineraries that respect the destination, duration, interests, budget, and currency.",
                 tools: [calculateDailyBudget],
                 loggerFactory: loggerFactory,
                 services: serviceProvider);

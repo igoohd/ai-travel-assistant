@@ -1,3 +1,4 @@
+using AiTravelPlanner.Application.Trips.Planning;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.Sanitization;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         services.AddSingleton<ITripInputSanitizer, TripInputSanitizer>();
         services.AddSingleton<ITripGenerationPromptBuilder, TripGenerationPromptBuilder>();
+        services.AddSingleton<DailyBudgetCalculator>();
 
         return services;
     }

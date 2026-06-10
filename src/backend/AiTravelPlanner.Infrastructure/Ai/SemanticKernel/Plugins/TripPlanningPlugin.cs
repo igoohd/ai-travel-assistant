@@ -1,9 +1,10 @@
 using System.ComponentModel;
+using AiTravelPlanner.Application.Trips.Planning;
 using Microsoft.SemanticKernel;
 
 namespace AiTravelPlanner.Infrastructure.Ai.SemanticKernel.Plugins;
 
-public sealed class TripPlanningPlugin
+public sealed class TripPlanningPlugin(DailyBudgetCalculator dailyBudgetCalculator)
 {
     [KernelFunction("calculate_daily_budget")]
     [Description("Calculates the average available budget per travel day.")]
@@ -11,11 +12,6 @@ public sealed class TripPlanningPlugin
         [Description("The total trip budget.")] decimal totalBudget,
         [Description("The number of travel days.")] int numberOfDays)
     {
-        if (numberOfDays <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(numberOfDays));
-        }
-
-        return decimal.Round(totalBudget / numberOfDays, 2);
+        return dailyBudgetCalculator.Calculate(totalBudget, numberOfDays);
     }
 }
