@@ -56,7 +56,21 @@ public sealed class AgentFrameworkTripPlanGenerator : ITripPlanGenerator
             options: runOptions,
             cancellationToken: cancellationToken);
 
-        var generatedPlan = response.Result;
+        GeneratedTripPlan generatedPlan;
+
+        try
+        {
+            generatedPlan = response.Result;
+        }
+        catch (JsonException exception)
+        {
+            _logger.LogError(
+                exception,
+                "PlannerAgent returned an invalid initial trip plan response: {Response}",
+                response.Text);
+
+            throw;
+        }
 
         var plan = generatedPlan.ToPlan(
             command,
@@ -106,7 +120,23 @@ public sealed class AgentFrameworkTripPlanGenerator : ITripPlanGenerator
             options: runOptions,
             cancellationToken: cancellationToken);
 
-        return revisedResponse.Result.ToPlan(
+        GeneratedTripPlan revisedGeneratedPlan;
+
+        try
+        {
+            revisedGeneratedPlan = revisedResponse.Result;
+        }
+        catch (JsonException exception)
+        {
+            _logger.LogError(
+                exception,
+                "PlannerAgent returned an invalid revised trip plan response: {Response}",
+                revisedResponse.Text);
+
+            throw;
+        }
+
+        return revisedGeneratedPlan.ToPlan(
             command,
             CreateMetadata(
                 response.Usage,
