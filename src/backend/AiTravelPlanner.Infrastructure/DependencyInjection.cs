@@ -115,13 +115,7 @@ public static class DependencyInjection
                     Endpoint = new Uri(options.Endpoint)
                 });
 
-            var innerClient = chatClient.AsIChatClient();
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-            return innerClient
-                .AsBuilder()
-                .UseKernelFunctionInvocation(loggerFactory)
-                .Build(serviceProvider);
+            return chatClient.AsIChatClient();
         });
 
         return services;
@@ -132,8 +126,16 @@ public static class DependencyInjection
         services.AddSingleton<Kernel>(serviceProvider =>
         {
             var chatClient = serviceProvider.GetRequiredService<IChatClient>();
+            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+            var semanticKernelChatClient = chatClient
+                .AsBuilder()
+                .UseKernelFunctionInvocation(loggerFactory)
+                .Build(serviceProvider);
+
             var kernelBuilder = Kernel.CreateBuilder();
 
+            kernelBuilder.Services.AddSingleton(semanticKernelChatClient);
             kernelBuilder.Services.AddSingleton(chatClient);
 
             var dailyBudgetCalculator = serviceProvider.GetRequiredService<DailyBudgetCalculator>();
