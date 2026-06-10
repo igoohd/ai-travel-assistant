@@ -160,11 +160,17 @@ public static class DependencyInjection
             var loggerFactory =
                 serviceProvider.GetRequiredService<ILoggerFactory>();
 
+
+            var calculateDailyBudget = AIFunctionFactory.Create(
+                (decimal totalBudget, int numberOfDays) => decimal.Round(totalBudget / numberOfDays, 2),
+                name: "calculate_daily_budget",
+                description: "Calculates the available daily budget.");
+
             return chatClient.AsAIAgent(
                 name: "TravelPlanner",
                 description: "Creates structured travel itineraries.",
-                instructions:
-                    "You are an AI travel planner. Create practical itineraries that respect the user's destination, duration, interests, budget, and currency.",
+                instructions: "You are an AI travel planner. Always use the calculate_daily_budget tool before creating the itinerary.",
+                tools: [calculateDailyBudget],
                 loggerFactory: loggerFactory,
                 services: serviceProvider);
         });
