@@ -1,4 +1,4 @@
-namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
+namespace AiTravelPlanner.Api.Contracts.Trips.TripDetails;
 
 public sealed record DayResponse(
     int DayNumber,

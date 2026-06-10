@@ -1,4 +1,4 @@
-namespace AiTravelPlanner.Infrastructure.Ai.AgentFramework.Models;
+namespace AiTravelPlanner.Infrastructure.Ai.AgentFramework.Contracts;
 
 public sealed record AgentValidationResult(
     bool IsValid,

@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using AiTravelPlanner.Infrastructure.Ai.GitHubModels.Contracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

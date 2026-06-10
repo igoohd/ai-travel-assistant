@@ -1,6 +1,8 @@
 using AiTravelPlanner.Api.Contracts;
 using AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
+using AiTravelPlanner.Api.Contracts.Trips.GetTrip;
 using AiTravelPlanner.Api.Contracts.Trips.ListTrips;
+using AiTravelPlanner.Api.Contracts.Trips.TripDetails;
 using AiTravelPlanner.Api.Contracts.Trips.ValidateTrip;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Application.Trips.UseCases.GetTrip;
@@ -32,9 +34,9 @@ public sealed class TripsController : ControllerBase
     }
 
     [HttpPost("generate")]
-    [ProducesResponseType<GenerateTripResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<TripDetailsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<GenerateTripResponse>> GenerateTrip(
+    public async Task<ActionResult<TripDetailsResponse>> GenerateTrip(
         [FromBody] GenerateTripRequest request,
         CancellationToken cancellationToken)
     {
@@ -51,9 +53,11 @@ public sealed class TripsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<GenerateTripResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<TripDetailsResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GenerateTripResponse>> GetTripById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<TripDetailsResponse>> GetTripById(
+        Guid id,
+        CancellationToken cancellationToken)
     {
         var result = await _getTripUseCase.HandleAsync(
             new GetTripQuery(id),

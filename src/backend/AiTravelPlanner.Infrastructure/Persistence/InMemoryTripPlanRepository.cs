@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
@@ -6,7 +7,7 @@ namespace AiTravelPlanner.Infrastructure.Persistence;
 
 public sealed class InMemoryTripPlanRepository : ITripPlanRepository
 {
-    private static readonly Dictionary<Guid, StoredTrip> Trips = new();
+    private static readonly ConcurrentDictionary<Guid, StoredTrip> Trips = new();
 
     public Task SaveAsync(
         Plan plan,

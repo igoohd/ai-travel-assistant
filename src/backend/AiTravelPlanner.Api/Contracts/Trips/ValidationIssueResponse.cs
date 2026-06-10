@@ -1,4 +1,4 @@
-namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
+namespace AiTravelPlanner.Api.Contracts.Trips;
 
 public sealed record ValidationIssueResponse(
     string Code,

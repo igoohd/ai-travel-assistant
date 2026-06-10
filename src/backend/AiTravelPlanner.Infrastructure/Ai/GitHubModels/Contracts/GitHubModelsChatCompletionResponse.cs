@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels;
+namespace AiTravelPlanner.Infrastructure.Ai.GitHubModels.Contracts;
 
 public sealed record GitHubModelsChatCompletionResponse(
     [property: JsonPropertyName("choices")]
@@ -15,7 +15,7 @@ public sealed record GitHubModelsChoice(
 
 public sealed record GitHubModelsResponseMessage(
     [property: JsonPropertyName("content")]
-string Content);
+    string Content);
 
 public sealed record GitHubModelsUsage(
     [property: JsonPropertyName("prompt_tokens")]

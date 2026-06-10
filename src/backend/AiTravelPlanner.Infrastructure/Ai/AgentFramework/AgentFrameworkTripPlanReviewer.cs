@@ -1,21 +1,27 @@
 using System.Text.Json;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
-using AiTravelPlanner.Infrastructure.Ai.AgentFramework.Models;
+using AiTravelPlanner.Infrastructure.Ai.AgentFramework.Contracts;
+using AiTravelPlanner.Infrastructure.Ai.Chat;
 using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace AiTravelPlanner.Infrastructure.Ai.AgentFramework;
 
 public sealed class AgentFrameworkTripPlanReviewer
 {
     private readonly ChatClientAgent _validatorAgent;
+    private readonly GitHubModelsChatOptions _options;
 
     public AgentFrameworkTripPlanReviewer(
         [FromKeyedServices(AgentKeys.Validator)]
-        ChatClientAgent validatorAgent)
+        ChatClientAgent validatorAgent,
+        IOptions<GitHubModelsChatOptions> options)
     {
         _validatorAgent = validatorAgent;
+        _options = options.Value;
     }
 
     public async Task<AgentReviewResult> ReviewAsync(
@@ -33,7 +39,14 @@ public sealed class AgentFrameworkTripPlanReviewer
                 command.Currency,
                 command.Interests
             },
-            Plan = plan
+            Plan = new
+            {
+                plan.Destination,
+                plan.NumberOfDays,
+                plan.Days,
+                plan.Budget,
+                plan.Summary
+            }
         });
 
         var prompt = $"""
@@ -42,10 +55,17 @@ public sealed class AgentFrameworkTripPlanReviewer
         {input}
         """;
 
-        var response =
-            await _validatorAgent.RunAsync<AgentValidationResult>(
-                prompt,
-                cancellationToken: cancellationToken);
+        var runOptions = new ChatClientAgentRunOptions(
+            new ChatOptions
+            {
+                Temperature = (float)_options.Temperature,
+                MaxOutputTokens = _options.MaxTokens
+            });
+
+        var response = await _validatorAgent.RunAsync<AgentValidationResult>(
+            prompt,
+            options: runOptions,
+            cancellationToken: cancellationToken);
 
         return new AgentReviewResult(
             response.Result.ToValidationIssues(),

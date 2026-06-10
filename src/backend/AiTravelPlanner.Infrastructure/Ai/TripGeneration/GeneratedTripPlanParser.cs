@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace AiTravelPlanner.Infrastructure.Ai.Models;
+namespace AiTravelPlanner.Infrastructure.Ai.TripGeneration;
 
 public sealed class GeneratedTripPlanParser
 {

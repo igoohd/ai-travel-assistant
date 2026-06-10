@@ -3,7 +3,7 @@ using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
 using AiTravelPlanner.Infrastructure.Ai.Chat;
-using AiTravelPlanner.Infrastructure.Ai.Models;
+using AiTravelPlanner.Infrastructure.Ai.TripGeneration;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;

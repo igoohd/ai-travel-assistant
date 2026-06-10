@@ -1,5 +1,5 @@
 using AiTravelPlanner.Domain.Trips;
-using AiTravelPlanner.Infrastructure.Ai.AgentFramework.Models;
+using AiTravelPlanner.Infrastructure.Ai.AgentFramework.Contracts;
 
 namespace AiTravelPlanner.Infrastructure.Ai.AgentFramework;
 
@@ -16,7 +16,7 @@ public static class AgentValidationMapper
     public static IReadOnlyList<ValidationIssue> ToValidationIssues(
         this AgentValidationResult result)
     {
-        return result.Findings
+        return (result.Findings ?? [])
             .Where(finding =>
                 AllowedCodes.Contains(finding.Code) &&
                 !string.IsNullOrWhiteSpace(finding.Message) &&

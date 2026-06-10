@@ -1,6 +1,6 @@
-namespace AiTravelPlanner.Api.Contracts.Trips.GenerateTrip;
+namespace AiTravelPlanner.Api.Contracts.Trips.TripDetails;
 
-public sealed record GenerateTripResponse(
+public sealed record TripDetailsResponse(
     Guid Id,
     string Destination,
     int NumberOfDays,

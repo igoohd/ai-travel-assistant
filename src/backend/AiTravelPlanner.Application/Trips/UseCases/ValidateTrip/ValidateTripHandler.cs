@@ -3,7 +3,7 @@ using AiTravelPlanner.Application.Trips.Validation;
 
 namespace AiTravelPlanner.Application.Trips.UseCases.ValidateTrip;
 
-public class ValidateTripHandler : IValidateTripUseCase
+public sealed class ValidateTripHandler : IValidateTripUseCase
 {
     private readonly ITripPlanRepository _tripPlanRepository;
     private readonly ITripPlanValidator _tripPlanValidator;

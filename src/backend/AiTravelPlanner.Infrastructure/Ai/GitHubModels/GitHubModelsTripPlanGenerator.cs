@@ -2,7 +2,8 @@ using AiTravelPlanner.Application.Trips.Ports;
 using AiTravelPlanner.Application.Trips.Prompting;
 using AiTravelPlanner.Application.Trips.UseCases.GenerateTrip;
 using AiTravelPlanner.Domain.Trips;
-using AiTravelPlanner.Infrastructure.Ai.Models;
+using AiTravelPlanner.Infrastructure.Ai.GitHubModels.Contracts;
+using AiTravelPlanner.Infrastructure.Ai.TripGeneration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
