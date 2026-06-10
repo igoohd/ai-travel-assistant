@@ -159,7 +159,7 @@ public static class DependencyInjection
     private static IServiceCollection AddAgentFramework(
     this IServiceCollection services)
     {
-        services.AddSingleton<ChatClientAgent>(serviceProvider =>
+        services.AddKeyedSingleton<ChatClientAgent>(AgentKeys.Planner, (serviceProvider, _) =>
         {
             var chatClient =
                 serviceProvider.GetRequiredService<IChatClient>();
@@ -192,6 +192,40 @@ public static class DependencyInjection
                 loggerFactory: loggerFactory,
                 services: serviceProvider);
         });
+
+        services.AddKeyedSingleton<ChatClientAgent>(
+            AgentKeys.Validator,
+            (serviceProvider, _) =>
+            {
+                var chatClient =
+                    serviceProvider.GetRequiredService<IChatClient>();
+
+                var loggerFactory =
+                    serviceProvider.GetRequiredService<ILoggerFactory>();
+
+                return chatClient.AsAIAgent(
+                    name: "TripValidator",
+                    description: "Reviews travel itineraries for practical problems.",
+                    instructions:
+                    """
+                        Review travel itineraries for practical problems.
+
+                        Use only these finding codes:
+                        - TOO_MANY_ACTIVITIES
+                        - BUDGET_EXCEEDED
+                        - UNREALISTIC_SCHEDULE
+                        - UNREALISTIC_TRANSPORTATION
+
+                        Severity must be Info, Warning, or Error.
+                        Set IsValid to true only when Findings is empty.
+                        Return concise, actionable messages.
+                    """,
+                    loggerFactory: loggerFactory,
+                    services: serviceProvider);
+            }
+        );
+
+        services.AddScoped<AgentFrameworkTripPlanReviewer>();
 
         return services;
     }
