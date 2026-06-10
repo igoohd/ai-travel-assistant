@@ -5,18 +5,19 @@ using AiTravelPlanner.Domain.Trips;
 using AiTravelPlanner.Infrastructure.Ai.Chat;
 using AiTravelPlanner.Infrastructure.Ai.Models;
 using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 
 namespace AiTravelPlanner.Infrastructure.Ai.AgentFramework;
 
 public sealed class AgentFrameworkTripPlanGenerator : ITripPlanGenerator
 {
-    private readonly AIAgent _agent;
+    private readonly ChatClientAgent _agent;
     private readonly ITripGenerationPromptBuilder _promptBuilder;
     private readonly GitHubModelsChatOptions _options;
 
     public AgentFrameworkTripPlanGenerator(
-        AIAgent agent,
+        ChatClientAgent agent,
         ITripGenerationPromptBuilder promptBuilder,
         IOptions<GitHubModelsChatOptions> options)
     {
@@ -34,13 +35,20 @@ public sealed class AgentFrameworkTripPlanGenerator : ITripPlanGenerator
             command,
             additionalInstruction);
 
-        var response = await _agent.RunAsync(
+        var runOptions = new ChatClientAgentRunOptions(
+            new ChatOptions
+            {
+                Temperature = (float)_options.Temperature,
+                MaxOutputTokens = _options.MaxTokens,
+            }
+        );
+
+        var response = await _agent.RunAsync<GeneratedTripPlan>(
             prompt,
+            options: runOptions,
             cancellationToken: cancellationToken);
 
-        var generatedPlan = GeneratedTripPlanParser.Parse(
-            response.Text,
-            "AgentFramework");
+        var generatedPlan = response.Result;
 
         var aiMetadata = new AiGenerationMetadata(
             Provider: "AgentFramework",

@@ -157,7 +157,7 @@ public static class DependencyInjection
     private static IServiceCollection AddAgentFramework(
     this IServiceCollection services)
     {
-        services.AddSingleton<AIAgent>(serviceProvider =>
+        services.AddSingleton<ChatClientAgent>(serviceProvider =>
         {
             var chatClient =
                 serviceProvider.GetRequiredService<IChatClient>();
